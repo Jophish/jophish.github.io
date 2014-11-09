@@ -1,9 +1,12 @@
+
 var numCircles = 200,
 	circleVect = new Array(),
 	scaleOffsets = new Array(),
 	increment = 0,
 	place = 0;
 var offset = 500, colorNum = 0 ;
+var back = two.makeGroup();
+var circs = two.makeGroup();
 
 function rectMove(s){
 	return (Math.cos(s * Math.PI / 180)*100)
@@ -21,14 +24,17 @@ function getRandomColor() {
     return color;
 }
 
+back.add(rect2);
+
 for (x = 0; x < numCircles; x++){
 circle = two.makeCircle(Math.random()*1400 + 100, Math.random()*700 + 100, Math.random()*75+10);
 circle.fill = getRandomColor();
 circleVect[x] = circle;
 scaleOffsets[x] = Math.random()*360;
+circs.add(circle);
 }
 
-
+//circs.center(500);
 
 
 
@@ -38,10 +44,12 @@ two.bind("update", function (frameCount){
 	rect2.translation.x = pos + offset + 300;
     rect2.translation.y = offset - 100;
     rect2.rotation = rectMove(place)/10;
-	
+	circs.scale +=  Math.cos((scaleOffsets[x] + increment++/100.0)*(Math.PI / 180)*10);
 	for (x = 0; x < numCircles; x++){
 	circleVect[x].scale = Math.cos((scaleOffsets[x] + increment++/100.0)*(Math.PI / 180)*10);
 	circleVect[x].fill = getRandomColor();
+	circleVect[x].translation.x += Math.cos(increment*10)*30
+	circleVect[x].translation.y += Math.sin(increment*10)*30
 	}
 	rect2.scale = 10 + Math.cos((increment/50.0)*(Math.PI / 180)*80);
 	colorNum++;
