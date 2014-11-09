@@ -40,12 +40,14 @@ circs.add(circle);
 
 mousePosition = {x: -500, y: -500};
 
-window.addEventListener("mousemove", function(event) {
+var updatePosition = function(event) {
 	mousePosition.x = event.clientX;
-	console.log('hello');
 	mousePosition.y = event.clientY;
 	//console.log(mousePosition);
-}, false);
+};
+window.addEventListener("mousemove", updatePosition, false);
+window.addEventListener("touchmove", updatePosition, false);
+
 
 function makeCirc(event) {
 	var x = mousePosition.x;
