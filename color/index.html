@@ -1,0 +1,124 @@
+<link rel="stylesheet" type="text/css" media="screen" href="css/layout.css" />
+
+<script src="./two.js"></script>
+<script type='text/javascript' src='./tinycolor/tinycolor.js'></script>
+<canvas onclick="updateimage()" id = "canvas"></canvas>
+
+
+<script>
+canva = document.getElementById("canvas");
+canva.height = window.innerHeight;
+canva.width = window.innerWidth;
+
+ctx = canva.getContext("2d")	
+updateimage();
+
+	
+function updateimage(){
+canva = document.getElementById("canvas");
+canva.height = window.innerHeight;
+canva.width = window.innerWidth;
+
+ctx = canva.getContext("2d")	
+function rgb(){
+	this.next = function() {return(Math.floor((Math.random() * 255)))};
+	this.col = function() {return({'r': this.next(), 'g': this.next(), 'b':this.next()})};
+	}
+function rgbtostr(rgb){
+	return("rgb("+String(rgb.r)+","+String(rgb.g)+","+String(rgb.b)+")")
+	}
+function HueShift(h, s){
+		return ((h + s)%360)
+		}
+
+rgb = new rgb();
+
+seedrgb = new tinycolor(rgb.col());
+temphsv = seedrgb.toHsv();
+
+colors = new Array();
+
+divs = Math.floor((Math.random() * 5))+ 2;
+var len = 10;
+
+for (x = 0; x < divs; x++){
+
+	
+	temphsv.h=Math.floor(HueShift(temphsv.h,x*(360/divs)));
+	
+	colors.push(tinycolor(temphsv).toRgb());
+	}
+
+for (x = 0; x < window.innerHeight/len; x++)
+{
+	for (y = 0; y < window.innerWidth/len; y++){
+	
+	ctx.fillStyle = rgbtostr(colors[Math.floor((Math.random() * colors.length))])
+	ctx.fillRect(y*len,x*len, len, len);
+		
+	}
+	}
+	
+}
+
+</script>
+
+<!--<script>
+// Make an instance of two and place it on the page.
+var elem = document.getElementById('draw-shapes');
+var params = { width: window.innerWidth, height: window.innerHeight};
+var two = new Two(params).appendTo(elem);
+
+function rgb(){
+	this.next = function() {return(Math.floor((Math.random() * 255)))};
+	this.col = function() {return("rgb(" + String(this.next()) +"," + String(this.next())+","+String(this.next())+")")};
+	}
+
+rgb = new rgb();
+
+var len = 50;
+// two has convenience methods to create shapes.
+var list = new Array();
+
+for (x = 0; x < window.innerHeight/len; x++)
+{
+	for (y = 0; y < window.innerWidth/len; y++){
+	var rect = two.makeRectangle(len/2 + y*len, len/2 + x*len, len, len);
+	
+	rect.fill = rgb.col();
+	rect.opacity = 0.75;
+	rect.noStroke();
+	two.update()
+	rect = null;
+	
+	
+	}
+	}
+
+// The object returned has many stylable properties:
+
+// Don't forget to tell two to render everything
+// to the screen
+two.update();
+</script>-->
+
+
+<!--<script>
+
+function rgb(){
+	this.next = function() {return(Math.floor((Math.random() * 255)))};
+	this.col = "rgb(" + String(this.next()) +"," + String(this.next())+","+String(this.next())+")";
+	}
+
+rgb = new rgb();
+
+
+img = document.getElementById("canvas");
+img.height = 1000;
+img.width = 1000;
+ctx = img.getContext("2d");	
+ctx.fillStyle = rgb.col;
+ctx.fillRect(0,0, 999999,999999);
+
+</script> -->
+
