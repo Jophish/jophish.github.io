@@ -2,7 +2,7 @@
 
 <script src="./two.js"></script>
 <script type='text/javascript' src='./tinycolor/tinycolor.js'></script>
-<canvas onclick="updateimage()" id = "canvas"></canvas>
+<canvas onclick="function () {clearInterval(repeat)}" id = "canvas"></canvas>
 
 
 <script>
@@ -60,7 +60,7 @@ for (x = 0; x < window.innerHeight/len; x++)
 	}
 	
 }
-
+var repeat= setInterval(updateimage, 250);
 </script>
 
 <!--<script>
