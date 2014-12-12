@@ -1,18 +1,40 @@
 <link rel="stylesheet" type="text/css" media="screen" href="css/layout.css" />
-
 <script src="./two.js"></script>
 <script type='text/javascript' src='./tinycolor/tinycolor.js'></script>
-<canvas onclick="function () {clearInterval(repeat)}" id = "canvas"></canvas>
+<canvas onclick = "run = img(run)"id = "canvas"></canvas>
 
 
+ 
 <script>
+
 canva = document.getElementById("canvas");
 canva.height = window.innerHeight;
 canva.width = window.innerWidth;
 
-ctx = canva.getContext("2d")	
-updateimage();
+canva.addEventListener("click", img);
 
+ctx = canva.getContext("2d");	
+updateimage();
+var run = 0;
+
+
+
+var seedrgb = new tinycolor("#223d58");
+
+
+function img(run) {
+
+if (run == 0){
+	repeat= setInterval(updateimage, 500);
+	return 1;
+	}
+	
+if (run == 1){
+	clearInterval(repeat);
+	return 0;
+	}
+	
+	}
 	
 function updateimage(){
 canva = document.getElementById("canvas");
@@ -33,19 +55,25 @@ function HueShift(h, s){
 
 rgb = new rgb();
 
-seedrgb = new tinycolor(rgb.col());
-temphsv = seedrgb.toHsv();
-
+//seedrgb = new tinycolor(rgb.col());
+temphsv = tinycolor(seedrgb).toHsv();
+fixhsv = temphsv;
+temphsv.h = HueShift(temphsv.h, 5);
+seedrgb = tinycolor(temphsv).toRgb();
 colors = new Array();
 
+divlen = 30;
 divs = Math.floor((Math.random() * 5))+ 2;
-var len = 10;
+
+var len = Math.floor((Math.random() * 50)) + 10;
+len = 30;
 
 for (x = 0; x < divs; x++){
 
 	
-	temphsv.h=Math.floor(HueShift(temphsv.h,x*(360/divs)));
-	
+	temphsv.h=Math.floor(HueShift(temphsv.h,x*(divlen/divs)));
+	temphsv.v = .9;
+	temphsv.s = .8;
 	colors.push(tinycolor(temphsv).toRgb());
 	}
 
@@ -60,7 +88,7 @@ for (x = 0; x < window.innerHeight/len; x++)
 	}
 	
 }
-var repeat= setInterval(updateimage, 250);
+
 </script>
 
 <!--<script>
