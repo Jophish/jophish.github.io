@@ -1,10 +1,21 @@
 <link rel="stylesheet" type="text/css" media="screen" href="css/layout.css" />
 <script src="./two.js"></script>
 <script type='text/javascript' src='./tinycolor/tinycolor.js'></script>
-<canvas onclick = "run = img(run)"id = "canvas"></canvas>
+<canvas onclick = "run = img(run)" id = "canvas"></canvas>
+<audio class = "load" source src="Music_new.mp3" type="audio/mp3" ></audio>
+<script>
 
+var context = new AudioContext();
 
- 
+oscillator = context.createOscillator();
+gainNode = context.createGain(); // Create boost pedal
+oscillator.connect(gainNode); // Connect bass guitar to boost pedal
+oscillator.type = "square";
+
+gainNode.connect(context.destination);
+gainNode.gain.value = 0.1;
+
+</script>
 <script>
 
 canva = document.getElementById("canvas");
@@ -14,8 +25,13 @@ canva.width = window.innerWidth;
 canva.addEventListener("click", img);
 
 ctx = canva.getContext("2d");	
+
+var notes = [466.164, 554.365, 622.254, 739.989, 830.609];
+
 updateimage();
 var run = 0;
+
+
 
 
 
@@ -23,20 +39,43 @@ var seedrgb = new tinycolor("#223d58");
 
 
 function img(run) {
+try {oscillator.start();}
+catch(err){}
+
 
 if (run == 0){
-	repeat= setInterval(updateimage, 500);
+	gainNode.gain.value= 0.1;
+	repeat= setInterval(updateimage, 250);
 	return 1;
 	}
 	
 if (run == 1){
+	gainNode.gain.value = 0;
 	clearInterval(repeat);
+	
 	return 0;
 	}
 	
 	}
-	
+
 function updateimage(){
+console.log(oscillator.frequency.value);
+gainNode.gain.value = 0;
+old = oscillator.frequency.value
+
+while (true){
+
+oscillator.frequency.value = notes[Math.floor((Math.random() * notes.length)) ];
+
+if (old == oscillator.frequency.value){
+	oscillator.frequency.value = notes[Math.floor((Math.random() * notes.length)) ];
+	}
+else{
+break}
+}
+	
+	
+gainNode.gain.value = 0.1;
 canva = document.getElementById("canvas");
 canva.height = window.innerHeight;
 canva.width = window.innerWidth;
