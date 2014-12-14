@@ -11,7 +11,7 @@ gridSize = {height : Math.ceil(height/cellSize), length : Math.ceil(length/cellS
 
 function createRandomCell (x,y) {
 var cellTypes = [createGrass(x,y), createPerson(x,y), createEmpty(x,y)];
-var cellWeights = [.7,.05,.3];
+var cellWeights = [.7,.01,.3];
 
 
 return getRandomItem(cellTypes, cellWeights);
@@ -76,7 +76,10 @@ var getRandomItem = function(list, weight) {
     // end of function
 };
 
-
+function start(){
 init();
 createEnv();
 displayEnv();
+}
+
+start();
