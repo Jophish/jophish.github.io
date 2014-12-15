@@ -1,8 +1,8 @@
 function init(){
 
 canvas = document.getElementById("test");
-cellSize = (Math.max(window.innerWidth, window.innerHeight) / 100);
-cellSize = 20;
+
+cellSize = 18;
 height = canvas.height = window.innerHeight;
 length = canvas.width = window.innerWidth; 
 ctx = canvas.getContext("2d");
