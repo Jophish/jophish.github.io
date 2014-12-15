@@ -2,7 +2,7 @@ function init(){
 
 canvas = document.getElementById("test");
 
-cellSize = 18;
+cellSize = 50;
 height = canvas.height = window.innerHeight;
 length = canvas.width = window.innerWidth; 
 ctx = canvas.getContext("2d");
@@ -15,7 +15,7 @@ console.log(length%cellSize);
 
 function createRandomCell (x,y) {
 var cellTypes = [createGrass(x,y), createPerson(x,y), createEmpty(x,y)];
-var cellWeights = [.7,.01,.3];
+var cellWeights = [70,.1,30];
 
 
 return getRandomItem(cellTypes, cellWeights);
@@ -85,10 +85,12 @@ var getRandomItem = function(list, weight) {
 };
 
 function start(){
+setTimeout(function() { requestAnimationFrame(start)}, 250);
 init();
 createEnv();
 displayEnv();
 }
 
 start();
-window.addEventListener("resize", start);
+
+//window.addEventListener("resize", start);
