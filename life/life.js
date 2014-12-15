@@ -1,13 +1,17 @@
 function init(){
 
 canvas = document.getElementById("test");
+cellSize = (Math.max(window.innerWidth, window.innerHeight) / 100);
+cellSize = 20;
 height = canvas.height = window.innerHeight;
-length = canvas.width = window.innerWidth;  
+length = canvas.width = window.innerWidth; 
 ctx = canvas.getContext("2d");
-cellSize = Math.ceil(Math.max(length, height) / 75);
+//canvas.style.marginTop = (window.innerHeight%cellSize)/2;
+//canvas.style.marginLeft = (window.innerWidth%cellSize)/2;
 gridSize = {height : Math.ceil(height/cellSize), length : Math.ceil(length/cellSize)};
-  
-}
+console.log(height%cellSize);
+console.log(length%cellSize);
+}   
 
 function createRandomCell (x,y) {
 var cellTypes = [createGrass(x,y), createPerson(x,y), createEmpty(x,y)];
@@ -17,17 +21,21 @@ var cellWeights = [.7,.01,.3];
 return getRandomItem(cellTypes, cellWeights);
 
 }
+
 function createEmpty(xpos,ypos){
-  return {col: "black" , x : xpos, y: ypos}
+  return {type : "empty", col: "black" , x : xpos, y: ypos}
   
 }
 
 function createGrass(xpos, ypos){ 
-  return { col : "green", genProb: .4, x : xpos, y: ypos};
+    var color = new tinycolor("#00FF00").toHsv();
+    color.s = 70;
+    color.v = Math.random()*40 + 30;
+  return {type: "grass", col : rgbtostr(tinycolor(color).toRgb()), genProb: .4, x : xpos, y: ypos};
 }
 
 function createPerson(xpos, ypos){
-  return { col : "brown", x : xpos, y: ypos}
+  return {type: "person", col : "brown", x : xpos, y: ypos}
 }
 
 function createEnv(){
@@ -83,3 +91,4 @@ displayEnv();
 }
 
 start();
+window.addEventListener("resize", start);
