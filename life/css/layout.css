@@ -32,7 +32,7 @@ footer, header, hgroup, menu, nav, section {
 body {
 	line-height: 1;
 	background-color: black;
-	overflow:hidden; 
+	
 
 }
 }
@@ -54,4 +54,8 @@ table {
 
 #ex1Slider .slider-selection {
 	background: #BABABA;
+}
+
+#test .test {
+	overflow:hidden; 
 }
