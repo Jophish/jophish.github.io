@@ -2,18 +2,18 @@
 
 <script src="./two.js"></script>
 <script type='text/javascript' src='./tinycolor/tinycolor.js'></script>
-<canvas onclick="function () {clearInterval(repeat)}" id = "canvas"></canvas>
-
+<canvas style="position:relative; font-size:50px; z-index:1;" onclick="updateimage()" id = "canvas"></canvas>
+<p style="position:relative; font-size:50px; z-index:2;">hello</p>
 
 <script>
-canva = document.getElementById("canvas");
-canva.height = window.innerHeight;
-canva.width = window.innerWidth;
+	canva = document.getElementById("canvas");
+	canva.height = window.innerHeight;
+	canva.width = window.innerWidth;
 
-ctx = canva.getContext("2d")	
-updateimage();
+	ctx = canva.getContext("2d")	
+	updateimage();
 
-	
+			
 function updateimage(){
 canva = document.getElementById("canvas");
 canva.height = window.innerHeight;
@@ -60,7 +60,7 @@ for (x = 0; x < window.innerHeight/len; x++)
 	}
 	
 }
-var repeat= setInterval(updateimage, 250);
+//var repeat= setInterval(updateimage, 250);
 </script>
 
 <!--<script>
