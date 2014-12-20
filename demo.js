@@ -56,7 +56,7 @@ function makeCirc(event) {
 		x = event.clientX;
 		y = event.clientY;
 	}
-	circle = two.makeCircle(x, y, (Math.cos(FRAMECOUNT / 60) + 1) * 100);
+	circle = two.makeCircle(x, y, (Math.cos(FRAMECOUNT /50) + 1) * 100);
 	circle.fill = getRandomColor();
 	circle.opacity = 0.4;
 	//circleVect[numCircles] = circle;
