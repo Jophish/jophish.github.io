@@ -9,7 +9,7 @@ function CustomObject(points, col, steps, opacity) {
 
     this.steps = steps;
     this.count = 0;
-
+    this.donemid = 0;
     this.points = points;
     this.numpoints = points.length;
     this.col = col;
@@ -44,7 +44,12 @@ function CustomObject(points, col, steps, opacity) {
     
     	this.group.children[this.numpoints -1] = this.getChildObjects();
 
+    	
+
     }
+    this.midbezlines = this.makeMidBezLines();
+
+    this.group.add(this.midbezlines);
  
     this.avgLoc = this.getAvgLoc();
    
@@ -81,7 +86,7 @@ CustomObject.prototype.makeLine = function(p1, p2, col) {
 
 CustomObject.prototype.makeBall = function(point) {
 
-	geometry = new THREE.SphereGeometry(.15,.15,5);
+	geometry = new THREE.SphereGeometry(.15,.15,1);
     material = new THREE.MeshPhongMaterial({color: this.col, transparent: true});
 	sphere = new THREE.Mesh(geometry, material);
 	sphere.position = point;
@@ -113,7 +118,9 @@ CustomObject.prototype.moveBall = function() {
 			
 			
 		}
+
 		this.child.moveBall(t);
+		this.addMidBezPoint();
 		
 	}
 	if (this.numpoints < 3){
@@ -212,6 +219,37 @@ CustomObject.prototype.addBezPoint = function(){
 }
 }
 
+CustomObject.prototype.addMidBezPoint = function(){
+
+	if (this.donemid == 0){
+
+
+	for (a = 0; a <this.balls.length; a++){
+
+		for (y = this.count; y < this.steps; y++){
+			if (this.count == 1){
+			this.group.children[this.group.children.length-1].children[a].geometry.attributes.position.array[0]= this.balls[a].position.x; //add the point to the end of the array
+    		this.group.children[this.group.children.length-1].children[a].geometry.attributes.position.array[1]= this.balls[a].position.y;
+    		this.group.children[this.group.children.length-1].children[a].geometry.attributes.position.array[2]= this.balls[a].position.z;
+
+
+		}
+		for (b = this.count; b < this.steps; b++){
+    	this.group.children[this.group.children.length-1].children[a].geometry.attributes.position.array[b*3]= this.balls[a].position.x; //add the point to the end of the array
+        this.group.children[this.group.children.length-1].children[a].geometry.attributes.position.array[b*3+1]= this.balls[a].position.y;
+        this.group.children[this.group.children.length-1].children[a].geometry.attributes.position.array[b*3+2]= this.balls[a].position.z;
+			}
+		this.group.children[this.group.children.length-1].children[a].geometry.attributes.position.needsUpdate = true;
+		this.group.children[this.group.children.length-1].children[a].geometry.verticesNeedUpdate = true;
+		}
+		
+	}
+	if (this.count == this.steps){
+    	this.donemid = 1;
+    }
+}
+}
+
 CustomObject.prototype.toggleLines = function(bool){
 
 	for(x = 0; x< this.numpoints-1; x++){
@@ -251,4 +289,45 @@ CustomObject.prototype.toggleCurve = function(bool){
 	}
 
 
+}
+
+CustomObject.prototype.toggleMidCurves = function(bool){
+
+	for(x = 0; x< this.balls.length; x++){
+
+		this.group.children[this.group.children.length-1].children[x].visible = bool;
+	}
+
+	if (this.numpoints > 3){
+		this.child.toggleMidCurves(bool);
+	}
+
+
+
+}
+
+CustomObject.prototype.makeMidBezLines = function(){
+
+	temp = new THREE.Object3D();
+
+	for (y = 0; y < this.balls.length;y++){
+		newgeometry = new THREE.BufferGeometry();
+    	lineMaterial = new THREE.LineBasicMaterial( { color: this.col} );
+    	verts = new Float32Array(this.steps*3);
+
+    	for (x=0; x < this.steps; x++){
+			verts[x*3+ 0] = this.balls[0].position.x;
+   			verts[x*3 + 1] = this.balls[0].position.y;
+   			verts[x*3 + 2] = this.balls[0].position.z;
+
+
+	}
+	newgeometry.addAttribute('position', new THREE.BufferAttribute(verts, 3));
+	myLine = new THREE.Line(newgeometry, lineMaterial);
+	myLine.geometry.dynamic = true;
+	temp.add(myLine);
+}
+
+    return temp
+    
 }

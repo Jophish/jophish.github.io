@@ -60,18 +60,31 @@ var FizzyText = function() {
 
   this.speed = 0.8;
   this.showLines = false;
+  this.showLines = true;
+  this.showLines = false;
   this.showPoints = false;
   this.showCurve = true;
+  this.showIntermediateCurves = false;
   this.numPoints = 5;
 };
 
 
   var text = new FizzyText();
   var gui = new DAT.GUI();
-  gui.add(text, 'showLines');
-  gui.add(text, 'showPoints');
-  gui.add(text, 'showCurve');
-  gui.add(text, "numPoints",2,40,1).onFinishChange(function(newValue) {
+  gui.add(text, 'showLines').onChange(function(newValue){
+    foo.toggleLines(text.showLines);
+  });
+  gui.add(text, 'showPoints').onChange(function(newValue){
+    foo.togglePoints(text.showPoints);
+  });
+  gui.add(text, 'showCurve').onChange(function(newValue){
+    foo.toggleCurve(text.showCurve);
+});
+  gui.add(text, 'showIntermediateCurves').onChange(function(newValue){
+    foo.toggleMidCurves(text.showIntermediateCurves);
+});
+  gui.add(text, "numPoints",2,80,1).onFinishChange(function(newValue) {
+
 
    veclist = [];
     for (x = 0; x < text.numPoints; x++){
@@ -83,7 +96,7 @@ var FizzyText = function() {
     scene.remove(scene.children[2]);
     scene.remove(scene.children[1]);
     scene.remove(scene.children[0]);
-    foo = new CustomObject(veclist, Math.random()*0xffffff, 500);
+    foo = new CustomObject(veclist, Math.random()*0xffffff, 400);
     scene.add(foo.group);
 
     var camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 10000, .5);
@@ -96,8 +109,16 @@ scene.add(camera);
 var light = new THREE.HemisphereLight( 0xffffbb, 0x080820, 1 );
 scene.add( light );
 
+foo.toggleLines(text.showLines); 
+foo.toggleCurve(text.showCurve);
+foo.toggleMidCurves(text.showIntermediateCurves);
+foo.togglePoints(text.showPoints);   
 });
-    
+
+foo.toggleLines(false); 
+foo.toggleCurve(true);
+foo.toggleMidCurves(false);
+foo.togglePoints(false);   
 render();
 function render() {
     lastnum = text.numPoints;
@@ -108,9 +129,10 @@ function render() {
     renderer.render(scene, camera);
 
 	foo.moveBall();
-    foo.toggleLines(text.showLines);
-    foo.togglePoints(text.showPoints);
-    foo.toggleCurve(text.showCurve);
+    
+    
+    
+    
     requestAnimationFrame(render);
 
     
