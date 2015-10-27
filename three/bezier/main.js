@@ -16,7 +16,7 @@ document.body.appendChild(renderer.domElement);
 var scene = new THREE.Scene;
 
 
-var numpts = 10;
+var numpts = 30;
 veclist = [];
 for (x = 0; x < numpts; x++){
     veclist.push(randvec(10));
@@ -35,7 +35,7 @@ scene.add( foo.group );
 
 var foo2 = new CustomObject(veclist2, Math.random()*0xffffff);
 
-scene.add( foo2.group );
+//scene.add( foo2.group );
 
  var camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 10000);
  camera.position.x = 20;
