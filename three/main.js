@@ -97,9 +97,15 @@ var clock = new THREE.Clock;
 var xAxis = new THREE.Vector3(1,0,0);
 var inc = .01;
 var temp = 1;
-
+var count = 0
 var angleinc = 0;
 function render() {
+
+	count += 1;
+
+	if (count > 100){
+		
+	}
 	angleinc += Math.PI/180;
 	controls.update(); // required if controls.enableDamping = true, or if controls.autoRotate = true
     renderer.render(scene, camera);
