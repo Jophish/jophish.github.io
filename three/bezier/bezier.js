@@ -56,6 +56,8 @@ CustomObject.prototype.makeLine3 = function(p1,p2){
 
 CustomObject.prototype.makeLine = function(p1, p2, col) {
 	geometry = new THREE.Geometry();
+	geometry.needsUpdate = true;
+
     geometry.vertices.push(p1);
     geometry.vertices.push(p2);
     material = new THREE.LineBasicMaterial( { color: col, linewidth: 30 } );
@@ -65,7 +67,7 @@ CustomObject.prototype.makeLine = function(p1, p2, col) {
 
 CustomObject.prototype.makeBall = function(point) {
 
-	geometry = new THREE.SphereGeometry(.1,.1,32);
+	geometry = new THREE.SphereGeometry(.1,.1,1);
     material = new THREE.MeshLambertMaterial({color: this.col});
 	sphere = new THREE.Mesh(geometry, material);
 	sphere.position = point;
@@ -83,12 +85,21 @@ CustomObject.prototype.moveBall = function(t) {
 	this.group.children[x].children[1].position.setZ(this.line3[x].at(t).z);
 
 }
+	
+
 	if (this.numpoints > 2){
 		//console.log(this.child.lines);
-		this.child = this.makeChildCurve();
+		
+		for (x = 0; x < this.balls.length -1; x++){
+			this.child.group.children[x].children[0].geometry.dynamic = true
+			this.child.group.children[x].children[0].geometry.vertices[0] = this.group.children[x].children[1].position;
+			this.child.group.children[x].children[0].geometry.vertices[1] = this.group.children[x+1].children[1].position;
+			this.child.group.children[x].children[0].geometry.verticesNeedUpdate = true;
+			
+			
+		}
 		this.child.moveBall(t);
-		this.group.remove(this.group.children[this.numpoints -1])
-		this.group.add(this.getChildObjects());
+		
 	}
 };
 

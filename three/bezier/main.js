@@ -1,5 +1,7 @@
 
-var stats;
+
+
+
 var width = window.innerWidth;
 var height = window.innerHeight;
 
@@ -14,19 +16,26 @@ document.body.appendChild(renderer.domElement);
 var scene = new THREE.Scene;
 
 
-var numpts = 5;
+var numpts = 10;
 veclist = [];
 for (x = 0; x < numpts; x++){
     veclist.push(randvec(10));
 }
 
-
+var numpts = 10;
+veclist2 = [];
+for (x = 0; x < numpts; x++){
+    veclist2.push(randvec(10));
+}
 
 
 var foo = new CustomObject(veclist, Math.random()*0xffffff);
 
 scene.add( foo.group );
 
+var foo2 = new CustomObject(veclist2, Math.random()*0xffffff);
+
+scene.add( foo2.group );
 
  var camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 10000);
  camera.position.x = 20;
@@ -40,7 +49,7 @@ var light = new THREE.HemisphereLight( 0xffffbb, 0x080820, 1 );
 scene.add( light );
 
 
-var SUB = 200;
+var SUB = 1000;
 var count = 0
 
 controls = new THREE.OrbitControls( camera, renderer.domElement );
@@ -49,8 +58,15 @@ controls = new THREE.OrbitControls( camera, renderer.domElement );
                 controls.dampingFactor = 0.25;
                 controls.enableZoom = true;
 
-function render() {
+var rendererStats  = new THREEx.RendererStats();
 
+rendererStats.domElement.style.position = 'absolute'
+rendererStats.domElement.style.left = '0px'
+rendererStats.domElement.style.bottom   = '0px'
+document.body.appendChild( rendererStats.domElement )
+
+function render() {
+    rendererStats.update(renderer);
     controls.update()
 
 
@@ -60,12 +76,14 @@ function render() {
     renderer.render(scene, camera);
 
 	foo.moveBall(frac);
+    foo2.moveBall(frac);
+    
     requestAnimationFrame(render);
 
 
 }
  
-render();
+requestAnimationFrame( render );
 
 function randvec(scale) {
     return new THREE.Vector3(scale*Math.random(), scale*Math.random(), scale*Math.random());
