@@ -8,6 +8,8 @@ function CustomObject(points, col) {
     this.numpoints = points.length;
     this.col = col;
 
+
+
     this.balls = [];
     this.lines = [];
     this.line3 = [];
@@ -25,9 +27,20 @@ function CustomObject(points, col) {
     	this.group.add(temp);
 
     }
+
+    
+
+    if (this.numpoints >2){
+    	
+    	this.child = this.makeChildCurve();
+    
+    	this.group.children[this.numpoints -1] = this.getChildObjects();
+
+    }
  
     this.avgLoc = this.getAvgLoc();
-
+   
+    
     return this;
 
 
@@ -70,6 +83,13 @@ CustomObject.prototype.moveBall = function(t) {
 	this.group.children[x].children[1].position.setZ(this.line3[x].at(t).z);
 
 }
+	if (this.numpoints > 2){
+		//console.log(this.child.lines);
+		this.child = this.makeChildCurve();
+		this.child.moveBall(t);
+		this.group.remove(this.group.children[this.numpoints -1])
+		this.group.add(this.getChildObjects());
+	}
 };
 
 
@@ -93,3 +113,20 @@ CustomObject.prototype.getAvgLoc = function() {
 
 	return new THREE.Vector3(xsum/this.numpoints, ysum/this.numpoints, zsum/this.numpoints);
 };
+
+CustomObject.prototype.makeChildCurve = function() {
+	points = [];
+	for (x = 0; x < this.numpoints-1; x++){
+		points.push(this.group.children[x].children[1].position);
+	};
+
+	return new CustomObject(points, this.col);
+};
+
+
+CustomObject.prototype.getChildObjects = function() {
+	if (this.numpoints >2){
+		return this.child.group;
+	}
+}
+
