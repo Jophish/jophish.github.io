@@ -74,7 +74,7 @@ CustomObject.prototype.makeLine = function(p1, p2, col) {
 
     geometry.vertices.push(p1);
     geometry.vertices.push(p2);
-    material = new THREE.LineBasicMaterial( { color: col, linewidth: 30 } );
+    material = new THREE.LineBasicMaterial( { color: col, } );
     return new THREE.Line(geometry, material);
 };
 
