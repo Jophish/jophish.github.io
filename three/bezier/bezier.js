@@ -1,14 +1,22 @@
 
 
-function CustomObject(points, col) {
+function CustomObject(points, col, steps, opacity) {
+
+
+
 
     this.type = 'CustomObject';
+
+    this.steps = steps;
+    this.count = 0;
 
     this.points = points;
     this.numpoints = points.length;
     this.col = col;
 
+    this.done = 0;
 
+    this.opacity = opacity;
 
     this.balls = [];
     this.lines = [];
@@ -40,7 +48,13 @@ function CustomObject(points, col) {
  
     this.avgLoc = this.getAvgLoc();
    
-    
+    if (this.numpoints <3){
+    	this.bez = this.createBezCurve();
+    	this.group.add(this.bez);
+    	
+
+
+    }
     return this;
 
 
@@ -67,8 +81,8 @@ CustomObject.prototype.makeLine = function(p1, p2, col) {
 
 CustomObject.prototype.makeBall = function(point) {
 
-	geometry = new THREE.SphereGeometry(.1,.1,1);
-    material = new THREE.MeshLambertMaterial({color: this.col});
+	geometry = new THREE.SphereGeometry(.15,.15,5);
+    material = new THREE.MeshPhongMaterial({color: this.col, transparent: true});
 	sphere = new THREE.Mesh(geometry, material);
 	sphere.position = point;
     
@@ -76,8 +90,9 @@ CustomObject.prototype.makeBall = function(point) {
 };
 
 
-CustomObject.prototype.moveBall = function(t) {
-
+CustomObject.prototype.moveBall = function() {
+	this.count = (this.count +1) % this.steps;
+	t = this.count/this.steps;
 	for (x = 0; x < this.numpoints -1; x++){
 	
 	this.group.children[x].children[1].position.setX(this.line3[x].at(t).x);
@@ -100,6 +115,11 @@ CustomObject.prototype.moveBall = function(t) {
 		}
 		this.child.moveBall(t);
 		
+	}
+	if (this.numpoints < 3){
+		if (this.done == 0){
+		this.addBezPoint();
+	}
 	}
 };
 
@@ -131,7 +151,7 @@ CustomObject.prototype.makeChildCurve = function() {
 		points.push(this.group.children[x].children[1].position);
 	};
 
-	return new CustomObject(points, this.col);
+	return new CustomObject(points, this.col, this.steps, this.opacity);
 };
 
 
@@ -141,3 +161,94 @@ CustomObject.prototype.getChildObjects = function() {
 	}
 }
 
+CustomObject.prototype.createBezCurve = function(){
+	
+    var newgeometry = new THREE.BufferGeometry();
+    var lineMaterial = new THREE.LineBasicMaterial( { color: 0xff0000} );
+
+   var verts = new Float32Array(this.steps*3);
+
+   for (x = 0; x < this.steps; x++){
+   verts[x*3+ 0] = this.balls[0].position.x;
+   verts[x*3 + 1] = this.balls[0].position.y;
+   verts[x*3 + 2] = this.balls[0].position.z;
+
+}
+
+       
+    newgeometry.addAttribute('position', new THREE.BufferAttribute(verts, 3));
+    
+
+    myLine = new THREE.Line(newgeometry, lineMaterial);
+
+    
+    myLine.geometry.dynamic = true;
+    
+    return myLine
+}
+
+CustomObject.prototype.addBezPoint = function(){
+	if (this.done == 0){
+
+	if (this.count == 1){
+	this.bez.geometry.attributes.position.array[0]= this.balls[0].position.x; //add the point to the end of the array
+    this.bez.geometry.attributes.position.array[1]= this.balls[0].position.y;
+    this.bez.geometry.attributes.position.array[2]= this.balls[0].position.z;
+	}
+	
+	//temp = this.bez.geometry.vertices.push(this.bez.geometry.vertices.shift()); //shift the array
+
+	for (x = this.count; x < this.steps; x++){
+    this.bez.geometry.attributes.position.array[x*3]= this.balls[0].position.x; //add the point to the end of the array
+    this.bez.geometry.attributes.position.array[x*3 +1]= this.balls[0].position.y;
+    this.bez.geometry.attributes.position.array[x*3 +2]= this.balls[0].position.z;
+}
+    this.bez.geometry.attributes.position.needsUpdate = true;
+    this.bez.geometry.verticesNeedUpdate = true;
+    if (this.count == this.steps){
+    	this.done = 1;
+    }
+
+}
+}
+
+CustomObject.prototype.toggleLines = function(bool){
+
+	for(x = 0; x< this.numpoints-1; x++){
+
+		this.group.children[x].children[0].visible = bool;
+	}
+
+	if (this.numpoints > 2){
+		this.child.toggleLines(bool);
+	}
+
+
+}
+
+CustomObject.prototype.togglePoints = function(bool){
+
+	for(x = 0; x< this.numpoints-1; x++){
+
+		this.group.children[x].children[1].visible = bool;
+	}
+
+	if (this.numpoints > 2){
+		this.child.togglePoints(bool);
+	}
+
+
+}
+
+CustomObject.prototype.toggleCurve = function(bool){
+
+	if (this.numpoints > 2){
+		this.child.toggleCurve(bool);
+	}
+
+	else{
+		this.bez.visible = bool;
+	}
+
+
+}
