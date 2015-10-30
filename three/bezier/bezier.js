@@ -94,7 +94,7 @@ CustomObject.prototype.makeLine = function(p1, p2, col) {
 
 CustomObject.prototype.makeBall = function(point) {
 
-	geometry = new THREE.SphereGeometry(.1,.1,1);
+	geometry = new THREE.SphereGeometry(.2,.2,1);
     material = new THREE.MeshPhongMaterial({color: this.col, transparent: true});
 	sphere = new THREE.Mesh(geometry, material);
 	sphere.position = point;

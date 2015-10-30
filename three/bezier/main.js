@@ -21,9 +21,15 @@ veclist = [];
 for (x = 0; x < numpts; x++){
     veclist.push(randvec(30));
 }
-
-
-var foo = new CustomObject(veclist, Math.random()*0xffffff, 400);
+col = Math.random()*0xffffff;
+dodec = new THREE.DodecahedronGeometry(30, 2);
+dodec = new THREE.TorusGeometry(15,5,10,10);
+mat2 = new THREE.MeshNormalMaterial({color: col, opacity: .5, transparent: true});
+scene.add(new THREE.Mesh(dodec, mat2))
+mat = new THREE.MeshNormalMaterial({color: col, opacity: 1, transparent: true, wireframe: true});
+scene.add(new THREE.Mesh(dodec, mat));
+//var foo = new CustomObject(veclist, Math.random()*0xffffff, 400);
+var foo = new CustomObject(dodec.vertices, col, 500);
 //var foo = new CustomObject([new THREE.Vector3(0,0,0),new THREE.Vector3(0,0,1),new THREE.Vector3(0,1,0),new THREE.Vector3(0,1,1),new THREE.Vector3(1,0,0),new THREE.Vector3(1,0,1),new THREE.Vector3(1,1,0),new THREE.Vector3(1,1,1)],0xff0000,300)
 scene.add( foo.group );
 
@@ -100,7 +106,7 @@ var FizzyText = function() {
     scene.remove(scene.children[2]);
     scene.remove(scene.children[1]);
     scene.remove(scene.children[0]);
-    foo = new CustomObject(veclist, Math.random()*0xffffff, 1000);
+    foo = new CustomObject(veclist, Math.random()*0xffffff, 200);
     scene.add(foo.group);
 
     var camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 10000, .5);
