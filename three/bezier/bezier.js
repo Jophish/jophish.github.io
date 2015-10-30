@@ -86,7 +86,7 @@ CustomObject.prototype.makeLine = function(p1, p2, col) {
 
 CustomObject.prototype.makeBall = function(point) {
 
-	geometry = new THREE.SphereGeometry(.15,.15,1);
+	geometry = new THREE.SphereGeometry(.1,.1,1);
     material = new THREE.MeshPhongMaterial({color: this.col, transparent: true});
 	sphere = new THREE.Mesh(geometry, material);
 	sphere.position = point;
@@ -219,6 +219,44 @@ CustomObject.prototype.addBezPoint = function(){
 }
 }
 
+//CustomObject.prototype.addMidBezPoint = function(){
+//	//new
+//	if (this.donemid == 0){
+//
+//
+//	for (a = 0; a <this.balls.length-1; a++){
+//		this.group.children[this.group.children.length-1].children[a].children[this.count].geometry.dynamic = true;
+//		for (y = this.count; y < this.steps; y++){
+//			if (this.count == 1){
+//			this.group.children[this.group.children.length-1].children[a].children[0].geometry.vertices[0] = new THREE.Vector3(this.balls[a].position.x, this.balls[a].position.y, this.balls[a].position.z); //add the point to the end of the array
+ //   		this.group.children[this.group.children.length-1].children[a].children[0].geometry.vertices[1] = new THREE.Vector3(this.balls[a].position.x, this.balls[a].position.y, this.balls[a].position.z); //add the point to the end of the array
+//
+//
+//		}
+//
+//			if (this.count == 0){
+//
+//				for (x = 0; x < this.count; x++){
+//					this.group.children[this.group.children.length-1].children[a].children[x].visible = false;
+//
+//				}
+//			}
+//
+//		else{
+ //   	this.group.children[this.group.children.length-1].children[a].children[this.count].geometry.vertices[0] = this.group.children[this.group.children.length-1].children[a].children[this.count-1].geometry.vertices[1]; //add the point to the end of the array
+//        this.group.children[this.group.children.length-1].children[a].children[this.count].geometry.vertices[1] = new THREE.Vector3(this.balls[a].position.x, this.balls[a].position.y, this.balls[a].position.z);
+//		this.group.children[this.group.children.length-1].children[a].children[this.count].visible = true;
+//		this.group.children[this.group.children.length-1].children[a].children[this.count].geometry.verticesNeedUpdate  = true;
+//			}
+//		}
+//		
+//	}
+//	if (this.count == this.steps){
+//    	this.donemid = 1;
+//    }
+//}
+//}
+
 CustomObject.prototype.addMidBezPoint = function(){
 
 	if (this.donemid == 0){
@@ -230,21 +268,22 @@ CustomObject.prototype.addMidBezPoint = function(){
 			if (this.count == 1){
 			this.group.children[this.group.children.length-1].children[a].geometry.attributes.position.array[0]= this.balls[a].position.x; //add the point to the end of the array
     		this.group.children[this.group.children.length-1].children[a].geometry.attributes.position.array[1]= this.balls[a].position.y;
-    		this.group.children[this.group.children.length-1].children[a].geometry.attributes.position.array[2]= this.balls[a].position.z;
+  			this.group.children[this.group.children.length-1].children[a].geometry.attributes.position.array[2]= this.balls[a].position.z;
 
 
 		}
-		for (b = this.count; b < this.steps; b++){
-    	this.group.children[this.group.children.length-1].children[a].geometry.attributes.position.array[b*3]= this.balls[a].position.x; //add the point to the end of the array
-        this.group.children[this.group.children.length-1].children[a].geometry.attributes.position.array[b*3+1]= this.balls[a].position.y;
-        this.group.children[this.group.children.length-1].children[a].geometry.attributes.position.array[b*3+2]= this.balls[a].position.z;
-			}
+		
+    	this.group.children[this.group.children.length-1].children[a].geometry.attributes.position.array[this.count*3]= this.balls[a].position.x; //add the point to the end of the array
+        this.group.children[this.group.children.length-1].children[a].geometry.attributes.position.array[this.count*3+1]= this.balls[a].position.y;
+        this.group.children[this.group.children.length-1].children[a].geometry.attributes.position.array[this.count*3+2]= this.balls[a].position.z;
+		
 		this.group.children[this.group.children.length-1].children[a].geometry.attributes.position.needsUpdate = true;
 		this.group.children[this.group.children.length-1].children[a].geometry.verticesNeedUpdate = true;
 		}
 		
 	}
-	if (this.count == this.steps){
+	if (this.count == this.steps-1){
+		console.log(this.group.children[this.group.children.length-1].children[1].geometry)
     	this.donemid = 1;
     }
 }
@@ -305,29 +344,66 @@ CustomObject.prototype.toggleMidCurves = function(bool){
 
 
 }
-
+//CustomObject.prototype.makeMidBezLines = function(){
+//
+//	temp = new THREE.Object3D();
+//
+//	for (y = 0; y < this.balls.length-1;y++){
+//
+//		newline = new THREE.Object3D();
+//		geometry = new THREE.Geometry();
+//		geometry.needsUpdate = true;
+//
+//
+ //   	geometry.vertices.push(new THREE.Vector3(this.balls[y].position.x, this.balls[y].position.y, this.balls[y].position.z));
+ //   	geometry.vertices.push(new THREE.Vector3(this.balls[y].position.x, this.balls[y].position.y, this.balls[y].position.z));
+//    	material = new THREE.LineBasicMaterial( { color: this.col, } );
+ //   	line = new THREE.Line(geometry, material);
+ //   	line.visible = false;
+//		for (x=0; x < this.steps+5; x++){
+//
+ //  			newline.add(line.clone());
+ //  		}
+//
+ //  		temp.add(newline);
+//	}
+//
+//
+//    return temp
+    
+//}
 CustomObject.prototype.makeMidBezLines = function(){
 
 	temp = new THREE.Object3D();
 
-	for (y = 0; y < this.balls.length;y++){
+    for (y = 0; y < this.balls.length;y++){
 		newgeometry = new THREE.BufferGeometry();
-    	lineMaterial = new THREE.LineBasicMaterial( { color: this.col} );
+   	lineMaterial = new THREE.LineBasicMaterial( { color: this.col} );
     	verts = new Float32Array(this.steps*3);
 
+  		newx = Math.random()*30
+    	newy = Math.random()*30
+    	newz = Math.random()*30
+
+    	verts[0] = this.points[0].x;
+   		verts[1] = this.points[0].y;
+   		verts[2] = this.points[0].z;
+
     	for (x=0; x < this.steps; x++){
-			verts[x*3+ 0] = this.balls[0].position.x;
-   			verts[x*3 + 1] = this.balls[0].position.y;
-   			verts[x*3 + 2] = this.balls[0].position.z;
+    		
+    		verts[x*3+ 0] = verts[0];
+   			verts[x*3 + 1] = verts[1];
+   			verts[x*3 + 2] = verts[2];
 
 
-	}
+		}
 	newgeometry.addAttribute('position', new THREE.BufferAttribute(verts, 3));
 	myLine = new THREE.Line(newgeometry, lineMaterial);
 	myLine.geometry.dynamic = true;
+	myLine.geometry.numItems = this.steps;
 	temp.add(myLine);
 }
-
+	console.log(temp);
     return temp
     
 }

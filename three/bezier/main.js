@@ -23,8 +23,8 @@ for (x = 0; x < numpts; x++){
 }
 
 
-var foo = new CustomObject(veclist, Math.random()*0xffffff, 500);
-
+var foo = new CustomObject(veclist, Math.random()*0xffffff, 100);
+//var foo = new CustomObject([new THREE.Vector3(0,0,0),new THREE.Vector3(0,0,1),new THREE.Vector3(0,1,0),new THREE.Vector3(0,1,1),new THREE.Vector3(1,0,0),new THREE.Vector3(1,0,1),new THREE.Vector3(1,1,0),new THREE.Vector3(1,1,1)],0xff0000,300)
 scene.add( foo.group );
 
  var camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 10000, .5);
