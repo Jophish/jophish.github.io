@@ -13,7 +13,7 @@ function CustomObject(points, col, steps, opacity) {
     this.points = points;
     this.numpoints = points.length;
     this.col = col;
-
+    this.lastball = []
     this.done = 0;
 
     this.opacity = opacity;
@@ -34,7 +34,15 @@ function CustomObject(points, col, steps, opacity) {
     	temp.add(this.balls[x]);
     	this.group.add(temp);
 
+    	
+
     }
+    
+    for (x = 0; x < this.numpoints -1; x++){
+
+		this.group.children[x].children[1].position.set(this.points[x]);
+
+		}
 
     
 
@@ -95,7 +103,7 @@ CustomObject.prototype.makeBall = function(point) {
 };
 
 
-CustomObject.prototype.moveBall = function() {
+CustomObject.prototype.moveBall = function(parent) {
 	this.count = (this.count +1) % this.steps;
 	t = this.count/this.steps;
 	for (x = 0; x < this.numpoints -1; x++){
@@ -119,8 +127,12 @@ CustomObject.prototype.moveBall = function() {
 			
 		}
 
-		this.child.moveBall(t);
-		this.addMidBezPoint();
+		this.child.moveBall(false);
+
+		if (parent == false){
+			this.addMidBezPoint();
+		}
+		
 		
 	}
 	if (this.numpoints < 3){
@@ -264,7 +276,7 @@ CustomObject.prototype.addMidBezPoint = function(){
 
 	for (a = 0; a <this.balls.length; a++){
 
-		for (y = this.count; y < this.steps; y++){
+		
 			if (this.count == 1){
 			this.group.children[this.group.children.length-1].children[a].geometry.attributes.position.array[0]= this.balls[a].position.x; //add the point to the end of the array
     		this.group.children[this.group.children.length-1].children[a].geometry.attributes.position.array[1]= this.balls[a].position.y;
@@ -281,28 +293,35 @@ CustomObject.prototype.addMidBezPoint = function(){
 		this.group.children[this.group.children.length-1].children[a].geometry.verticesNeedUpdate = true;
 		}
 		
-	}
+	
 	if (this.count == this.steps-1){
-		console.log(this.group.children[this.group.children.length-1].children[1].geometry)
+		
+
     	this.donemid = 1;
     }
 }
 }
 
-CustomObject.prototype.toggleLines = function(bool){
-
+CustomObject.prototype.toggleLines = function(bool, parent){
+	if (parent == false){
 	for(x = 0; x< this.numpoints-1; x++){
 
 		this.group.children[x].children[0].visible = bool;
 	}
-
+}
 	if (this.numpoints > 2){
-		this.child.toggleLines(bool);
+		this.child.toggleLines(bool, false);
 	}
 
 
 }
 
+CustomObject.prototype.toggleOutline = function(bool){
+	for(x = 0; x< this.numpoints-1; x++){
+
+		this.group.children[x].children[0].visible = bool;
+	}
+}
 CustomObject.prototype.togglePoints = function(bool){
 
 	for(x = 0; x< this.numpoints-1; x++){
@@ -381,14 +400,10 @@ CustomObject.prototype.makeMidBezLines = function(){
    	lineMaterial = new THREE.LineBasicMaterial( { color: this.col} );
     	verts = new Float32Array(this.steps*3);
 
-  		newx = Math.random()*30
-    	newy = Math.random()*30
-    	newz = Math.random()*30
-
     	verts[0] = this.points[0].x;
    		verts[1] = this.points[0].y;
    		verts[2] = this.points[0].z;
-
+   		
     	for (x=0; x < this.steps; x++){
     		
     		verts[x*3+ 0] = verts[0];
@@ -403,7 +418,7 @@ CustomObject.prototype.makeMidBezLines = function(){
 	myLine.geometry.numItems = this.steps;
 	temp.add(myLine);
 }
-	console.log(temp);
+	
     return temp
     
 }

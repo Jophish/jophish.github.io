@@ -23,7 +23,7 @@ for (x = 0; x < numpts; x++){
 }
 
 
-var foo = new CustomObject(veclist, Math.random()*0xffffff, 100);
+var foo = new CustomObject(veclist, Math.random()*0xffffff, 400);
 //var foo = new CustomObject([new THREE.Vector3(0,0,0),new THREE.Vector3(0,0,1),new THREE.Vector3(0,1,0),new THREE.Vector3(0,1,1),new THREE.Vector3(1,0,0),new THREE.Vector3(1,0,1),new THREE.Vector3(1,1,0),new THREE.Vector3(1,1,1)],0xff0000,300)
 scene.add( foo.group );
 
@@ -65,14 +65,18 @@ var FizzyText = function() {
   this.showPoints = false;
   this.showCurve = true;
   this.showIntermediateCurves = false;
+  this.showOutline = false;
   this.numPoints = 5;
 };
 
 
   var text = new FizzyText();
   var gui = new DAT.GUI();
+  gui.add(text, 'showOutline').onChange(function(newValue){
+    foo.toggleOutline(text.showOutline);
+  });
   gui.add(text, 'showLines').onChange(function(newValue){
-    foo.toggleLines(text.showLines);
+    foo.toggleLines(text.showLines, true);
   });
   gui.add(text, 'showPoints').onChange(function(newValue){
     foo.togglePoints(text.showPoints);
@@ -96,7 +100,7 @@ var FizzyText = function() {
     scene.remove(scene.children[2]);
     scene.remove(scene.children[1]);
     scene.remove(scene.children[0]);
-    foo = new CustomObject(veclist, Math.random()*0xffffff, 400);
+    foo = new CustomObject(veclist, Math.random()*0xffffff, 1000);
     scene.add(foo.group);
 
     var camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 10000, .5);
@@ -110,12 +114,14 @@ var light = new THREE.HemisphereLight( 0xffffbb, 0x080820, 1 );
 scene.add( light );
 
 foo.toggleLines(text.showLines); 
+foo.toggleOutline(text.showOutline); 
 foo.toggleCurve(text.showCurve);
 foo.toggleMidCurves(text.showIntermediateCurves);
 foo.togglePoints(text.showPoints);   
 });
 
-foo.toggleLines(false); 
+foo.toggleLines(false, true); 
+foo.toggleOutline(false); 
 foo.toggleCurve(true);
 foo.toggleMidCurves(false);
 foo.togglePoints(false);   
@@ -128,7 +134,7 @@ function render() {
 
     renderer.render(scene, camera);
 
-	foo.moveBall();
+	foo.moveBall(true);
     
     
     
