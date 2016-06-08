@@ -1,0 +1,864 @@
+
+
+#custom-post-1 {
+    margin: 2vh;
+    padding: 2vh;
+    border: 2vh
+    border-color: #d98c8c;
+
+    background: #d98c8c;
+
+}
+#custom-post-1:hover {
+	#text-decoration: none;
+  	color: #fff;
+	background: #fa9e9e;
+	border-color: #fa9e9e !important;
+
+}
+
+#custom-post-1 div:hover {
+	#text-decoration: none;
+  	color: #fff;
+	background: #fa9e9e;
+	border-color: #fa9e9e;
+
+}
+
+#custom-post-1 div a:hover {
+	#text-decoration: none;
+  	color: #fff;
+	background: #fa9e9e;
+	border-color: #fa9e9e;
+
+}
+
+
+
+
+#custom-post-2 {
+    margin: 2vh;
+    padding: 2vh;
+    border: 2vh
+    border-color: #d9a38c;
+
+    background: #d9a38c;
+
+}
+#custom-post-2:hover {
+	#text-decoration: none;
+  	color: #fff;
+	background: #faba9e;
+	border-color: #faba9e !important;
+
+}
+
+#custom-post-2 div:hover {
+	#text-decoration: none;
+  	color: #fff;
+	background: #faba9e;
+	border-color: #faba9e;
+
+}
+
+#custom-post-2 div a:hover {
+	#text-decoration: none;
+  	color: #fff;
+	background: #faba9e;
+	border-color: #faba9e;
+
+}
+
+
+
+
+#custom-post-3 {
+    margin: 2vh;
+    padding: 2vh;
+    border: 2vh
+    border-color: #d9ba8c;
+
+    background: #d9ba8c;
+
+}
+#custom-post-3:hover {
+	#text-decoration: none;
+  	color: #fff;
+	background: #fad59e;
+	border-color: #fad59e !important;
+
+}
+
+#custom-post-3 div:hover {
+	#text-decoration: none;
+  	color: #fff;
+	background: #fad59e;
+	border-color: #fad59e;
+
+}
+
+#custom-post-3 div a:hover {
+	#text-decoration: none;
+  	color: #fff;
+	background: #fad59e;
+	border-color: #fad59e;
+
+}
+
+
+
+
+#custom-post-4 {
+    margin: 2vh;
+    padding: 2vh;
+    border: 2vh
+    border-color: #d9d18c;
+
+    background: #d9d18c;
+
+}
+#custom-post-4:hover {
+	#text-decoration: none;
+  	color: #fff;
+	background: #faf19e;
+	border-color: #faf19e !important;
+
+}
+
+#custom-post-4 div:hover {
+	#text-decoration: none;
+  	color: #fff;
+	background: #faf19e;
+	border-color: #faf19e;
+
+}
+
+#custom-post-4 div a:hover {
+	#text-decoration: none;
+  	color: #fff;
+	background: #faf19e;
+	border-color: #faf19e;
+
+}
+
+
+
+
+#custom-post-5 {
+    margin: 2vh;
+    padding: 2vh;
+    border: 2vh
+    border-color: #c9d98c;
+
+    background: #c9d98c;
+
+}
+#custom-post-5:hover {
+	#text-decoration: none;
+  	color: #fff;
+	background: #e8fa9e;
+	border-color: #e8fa9e !important;
+
+}
+
+#custom-post-5 div:hover {
+	#text-decoration: none;
+  	color: #fff;
+	background: #e8fa9e;
+	border-color: #e8fa9e;
+
+}
+
+#custom-post-5 div a:hover {
+	#text-decoration: none;
+  	color: #fff;
+	background: #e8fa9e;
+	border-color: #e8fa9e;
+
+}
+
+
+
+
+#custom-post-6 {
+    margin: 2vh;
+    padding: 2vh;
+    border: 2vh
+    border-color: #b2d98c;
+
+    background: #b2d98c;
+
+}
+#custom-post-6:hover {
+	#text-decoration: none;
+  	color: #fff;
+	background: #ccfa9e;
+	border-color: #ccfa9e !important;
+
+}
+
+#custom-post-6 div:hover {
+	#text-decoration: none;
+  	color: #fff;
+	background: #ccfa9e;
+	border-color: #ccfa9e;
+
+}
+
+#custom-post-6 div a:hover {
+	#text-decoration: none;
+  	color: #fff;
+	background: #ccfa9e;
+	border-color: #ccfa9e;
+
+}
+
+
+
+
+#custom-post-7 {
+    margin: 2vh;
+    padding: 2vh;
+    border: 2vh
+    border-color: #9cd98c;
+
+    background: #9cd98c;
+
+}
+#custom-post-7:hover {
+	#text-decoration: none;
+  	color: #fff;
+	background: #b0fa9e;
+	border-color: #b0fa9e !important;
+
+}
+
+#custom-post-7 div:hover {
+	#text-decoration: none;
+  	color: #fff;
+	background: #b0fa9e;
+	border-color: #b0fa9e;
+
+}
+
+#custom-post-7 div a:hover {
+	#text-decoration: none;
+  	color: #fff;
+	background: #b0fa9e;
+	border-color: #b0fa9e;
+
+}
+
+
+
+
+#custom-post-8 {
+    margin: 2vh;
+    padding: 2vh;
+    border: 2vh
+    border-color: #8cd994;
+
+    background: #8cd994;
+
+}
+#custom-post-8:hover {
+	#text-decoration: none;
+  	color: #fff;
+	background: #9efaa7;
+	border-color: #9efaa7 !important;
+
+}
+
+#custom-post-8 div:hover {
+	#text-decoration: none;
+  	color: #fff;
+	background: #9efaa7;
+	border-color: #9efaa7;
+
+}
+
+#custom-post-8 div a:hover {
+	#text-decoration: none;
+  	color: #fff;
+	background: #9efaa7;
+	border-color: #9efaa7;
+
+}
+
+
+
+
+#custom-post-9 {
+    margin: 2vh;
+    padding: 2vh;
+    border: 2vh
+    border-color: #8cd9ab;
+
+    background: #8cd9ab;
+
+}
+#custom-post-9:hover {
+	#text-decoration: none;
+  	color: #fff;
+	background: #9efac3;
+	border-color: #9efac3 !important;
+
+}
+
+#custom-post-9 div:hover {
+	#text-decoration: none;
+  	color: #fff;
+	background: #9efac3;
+	border-color: #9efac3;
+
+}
+
+#custom-post-9 div a:hover {
+	#text-decoration: none;
+  	color: #fff;
+	background: #9efac3;
+	border-color: #9efac3;
+
+}
+
+
+
+
+#custom-post-10 {
+    margin: 2vh;
+    padding: 2vh;
+    border: 2vh
+    border-color: #8cd9c2;
+
+    background: #8cd9c2;
+
+}
+#custom-post-10:hover {
+	#text-decoration: none;
+  	color: #fff;
+	background: #9efade;
+	border-color: #9efade !important;
+
+}
+
+#custom-post-10 div:hover {
+	#text-decoration: none;
+  	color: #fff;
+	background: #9efade;
+	border-color: #9efade;
+
+}
+
+#custom-post-10 div a:hover {
+	#text-decoration: none;
+  	color: #fff;
+	background: #9efade;
+	border-color: #9efade;
+
+}
+
+
+
+
+#custom-post-11 {
+    margin: 2vh;
+    padding: 2vh;
+    border: 2vh
+    border-color: #8cd9d9;
+
+    background: #8cd9d9;
+
+}
+#custom-post-11:hover {
+	#text-decoration: none;
+  	color: #fff;
+	background: #9efafa;
+	border-color: #9efafa !important;
+
+}
+
+#custom-post-11 div:hover {
+	#text-decoration: none;
+  	color: #fff;
+	background: #9efafa;
+	border-color: #9efafa;
+
+}
+
+#custom-post-11 div a:hover {
+	#text-decoration: none;
+  	color: #fff;
+	background: #9efafa;
+	border-color: #9efafa;
+
+}
+
+
+
+
+#custom-post-12 {
+    margin: 2vh;
+    padding: 2vh;
+    border: 2vh
+    border-color: #8cc2d9;
+
+    background: #8cc2d9;
+
+}
+#custom-post-12:hover {
+	#text-decoration: none;
+  	color: #fff;
+	background: #9edefa;
+	border-color: #9edefa !important;
+
+}
+
+#custom-post-12 div:hover {
+	#text-decoration: none;
+  	color: #fff;
+	background: #9edefa;
+	border-color: #9edefa;
+
+}
+
+#custom-post-12 div a:hover {
+	#text-decoration: none;
+  	color: #fff;
+	background: #9edefa;
+	border-color: #9edefa;
+
+}
+
+
+
+
+#custom-post-13 {
+    margin: 2vh;
+    padding: 2vh;
+    border: 2vh
+    border-color: #8cabd9;
+
+    background: #8cabd9;
+
+}
+#custom-post-13:hover {
+	#text-decoration: none;
+  	color: #fff;
+	background: #9ec3fa;
+	border-color: #9ec3fa !important;
+
+}
+
+#custom-post-13 div:hover {
+	#text-decoration: none;
+  	color: #fff;
+	background: #9ec3fa;
+	border-color: #9ec3fa;
+
+}
+
+#custom-post-13 div a:hover {
+	#text-decoration: none;
+  	color: #fff;
+	background: #9ec3fa;
+	border-color: #9ec3fa;
+
+}
+
+
+
+
+#custom-post-14 {
+    margin: 2vh;
+    padding: 2vh;
+    border: 2vh
+    border-color: #8c94d9;
+
+    background: #8c94d9;
+
+}
+#custom-post-14:hover {
+	#text-decoration: none;
+  	color: #fff;
+	background: #9ea7fa;
+	border-color: #9ea7fa !important;
+
+}
+
+#custom-post-14 div:hover {
+	#text-decoration: none;
+  	color: #fff;
+	background: #9ea7fa;
+	border-color: #9ea7fa;
+
+}
+
+#custom-post-14 div a:hover {
+	#text-decoration: none;
+  	color: #fff;
+	background: #9ea7fa;
+	border-color: #9ea7fa;
+
+}
+
+
+
+
+#custom-post-15 {
+    margin: 2vh;
+    padding: 2vh;
+    border: 2vh
+    border-color: #9c8cd9;
+
+    background: #9c8cd9;
+
+}
+#custom-post-15:hover {
+	#text-decoration: none;
+  	color: #fff;
+	background: #b09efa;
+	border-color: #b09efa !important;
+
+}
+
+#custom-post-15 div:hover {
+	#text-decoration: none;
+  	color: #fff;
+	background: #b09efa;
+	border-color: #b09efa;
+
+}
+
+#custom-post-15 div a:hover {
+	#text-decoration: none;
+  	color: #fff;
+	background: #b09efa;
+	border-color: #b09efa;
+
+}
+
+
+
+
+#custom-post-16 {
+    margin: 2vh;
+    padding: 2vh;
+    border: 2vh
+    border-color: #b28cd9;
+
+    background: #b28cd9;
+
+}
+#custom-post-16:hover {
+	#text-decoration: none;
+  	color: #fff;
+	background: #cc9efa;
+	border-color: #cc9efa !important;
+
+}
+
+#custom-post-16 div:hover {
+	#text-decoration: none;
+  	color: #fff;
+	background: #cc9efa;
+	border-color: #cc9efa;
+
+}
+
+#custom-post-16 div a:hover {
+	#text-decoration: none;
+  	color: #fff;
+	background: #cc9efa;
+	border-color: #cc9efa;
+
+}
+
+
+
+
+#custom-post-17 {
+    margin: 2vh;
+    padding: 2vh;
+    border: 2vh
+    border-color: #c98cd9;
+
+    background: #c98cd9;
+
+}
+#custom-post-17:hover {
+	#text-decoration: none;
+  	color: #fff;
+	background: #e89efa;
+	border-color: #e89efa !important;
+
+}
+
+#custom-post-17 div:hover {
+	#text-decoration: none;
+  	color: #fff;
+	background: #e89efa;
+	border-color: #e89efa;
+
+}
+
+#custom-post-17 div a:hover {
+	#text-decoration: none;
+  	color: #fff;
+	background: #e89efa;
+	border-color: #e89efa;
+
+}
+
+
+
+
+#custom-post-18 {
+    margin: 2vh;
+    padding: 2vh;
+    border: 2vh
+    border-color: #d98cd1;
+
+    background: #d98cd1;
+
+}
+#custom-post-18:hover {
+	#text-decoration: none;
+  	color: #fff;
+	background: #fa9ef1;
+	border-color: #fa9ef1 !important;
+
+}
+
+#custom-post-18 div:hover {
+	#text-decoration: none;
+  	color: #fff;
+	background: #fa9ef1;
+	border-color: #fa9ef1;
+
+}
+
+#custom-post-18 div a:hover {
+	#text-decoration: none;
+  	color: #fff;
+	background: #fa9ef1;
+	border-color: #fa9ef1;
+
+}
+
+
+
+
+#custom-post-19 {
+    margin: 2vh;
+    padding: 2vh;
+    border: 2vh
+    border-color: #d98cba;
+
+    background: #d98cba;
+
+}
+#custom-post-19:hover {
+	#text-decoration: none;
+  	color: #fff;
+	background: #fa9ed5;
+	border-color: #fa9ed5 !important;
+
+}
+
+#custom-post-19 div:hover {
+	#text-decoration: none;
+  	color: #fff;
+	background: #fa9ed5;
+	border-color: #fa9ed5;
+
+}
+
+#custom-post-19 div a:hover {
+	#text-decoration: none;
+  	color: #fff;
+	background: #fa9ed5;
+	border-color: #fa9ed5;
+
+}
+
+
+
+
+#custom-post-20 {
+    margin: 2vh;
+    padding: 2vh;
+    border: 2vh
+    border-color: #d98ca3;
+
+    background: #d98ca3;
+
+}
+#custom-post-20:hover {
+	#text-decoration: none;
+  	color: #fff;
+	background: #fa9eba;
+	border-color: #fa9eba !important;
+
+}
+
+#custom-post-20 div:hover {
+	#text-decoration: none;
+  	color: #fff;
+	background: #fa9eba;
+	border-color: #fa9eba;
+
+}
+
+#custom-post-20 div a:hover {
+	#text-decoration: none;
+  	color: #fff;
+	background: #fa9eba;
+	border-color: #fa9eba;
+
+}
+
+
+
+
+#custom-post-21 {
+    margin: 2vh;
+    padding: 2vh;
+    border: 2vh
+    border-color: #d98c8c;
+
+    background: #d98c8c;
+
+}
+#custom-post-21:hover {
+	#text-decoration: none;
+  	color: #fff;
+	background: #fa9e9e;
+	border-color: #fa9e9e !important;
+
+}
+
+#custom-post-21 div:hover {
+	#text-decoration: none;
+  	color: #fff;
+	background: #fa9e9e;
+	border-color: #fa9e9e;
+
+}
+
+#custom-post-21 div a:hover {
+	#text-decoration: none;
+  	color: #fff;
+	background: #fa9e9e;
+	border-color: #fa9e9e;
+
+}
+
+
+
+
+#custom-post-22 {
+    margin: 2vh;
+    padding: 2vh;
+    border: 2vh
+    border-color: #d9a38c;
+
+    background: #d9a38c;
+
+}
+#custom-post-22:hover {
+	#text-decoration: none;
+  	color: #fff;
+	background: #faba9e;
+	border-color: #faba9e !important;
+
+}
+
+#custom-post-22 div:hover {
+	#text-decoration: none;
+  	color: #fff;
+	background: #faba9e;
+	border-color: #faba9e;
+
+}
+
+#custom-post-22 div a:hover {
+	#text-decoration: none;
+  	color: #fff;
+	background: #faba9e;
+	border-color: #faba9e;
+
+}
+
+
+
+
+#custom-post-23 {
+    margin: 2vh;
+    padding: 2vh;
+    border: 2vh
+    border-color: #d9ba8c;
+
+    background: #d9ba8c;
+
+}
+#custom-post-23:hover {
+	#text-decoration: none;
+  	color: #fff;
+	background: #fad59e;
+	border-color: #fad59e !important;
+
+}
+
+#custom-post-23 div:hover {
+	#text-decoration: none;
+  	color: #fff;
+	background: #fad59e;
+	border-color: #fad59e;
+
+}
+
+#custom-post-23 div a:hover {
+	#text-decoration: none;
+  	color: #fff;
+	background: #fad59e;
+	border-color: #fad59e;
+
+}
+
+
+
+
+#custom-post-24 {
+    margin: 2vh;
+    padding: 2vh;
+    border: 2vh
+    border-color: #d9d18c;
+
+    background: #d9d18c;
+
+}
+#custom-post-24:hover {
+	#text-decoration: none;
+  	color: #fff;
+	background: #faf19e;
+	border-color: #faf19e !important;
+
+}
+
+#custom-post-24 div:hover {
+	#text-decoration: none;
+  	color: #fff;
+	background: #faf19e;
+	border-color: #faf19e;
+
+}
+
+#custom-post-24 div a:hover {
+	#text-decoration: none;
+  	color: #fff;
+	background: #faf19e;
+	border-color: #faf19e;
+
+}
+
+

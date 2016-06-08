@@ -1,0 +1,94 @@
+<!doctype HTML>
+<html lang="en">
+
+  <head class="bg">
+    <link rel="stylesheet" href="assets/css/bootstrap.css" type="text/css" />
+    <link rel="stylesheet" href="assets/css/custom.css" type="text/css" />
+    <script type="text/javascript" src="assets/js/bootstrap.js"></script> 
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,200,300,200italic,300italic,400italic' rel='stylesheet' type='text/css'>
+    
+    <link href="assets/css/simple-sidebar.css" rel="stylesheet">
+
+  </head>
+  
+  <body class="bg" style="height: 100%">
+    <!-- sidebar here-->
+    <div class="container-fluid bg"style="height: 100%">
+      <div class="row bg" style="height: 100%">
+     
+
+	<div class="col-sm-1 sidebar">
+
+             <ul class="sidebar-nav">
+                <li>
+                    <a href="about.html">{{about}}</a>
+                </li>
+                <li>
+                    <a href="index.html">{{posts}}</a>
+                </li>
+                <li>
+                    <a href="projects.html">{{projects}}</a>
+                </li>
+             </ul>
+	</div>
+
+	<div class="col-sm-11 bg stuff" >
+	  <div class="container" style="width: 100%">
+	  <div class="row bg">
+	    <div class="col-sm-3 bg"></div>
+	    <h1 id="title" class="text-center col-sm-6 bg" style=""><a href="#">j  a  b</a></h1>
+	    <div class="col-sm-3 bg"></div>
+	  </div>
+
+	  <div class="row bg">
+	    <div class="col-sm-2 bg"></div>
+	    <h3 id="" class="text-center col-sm-8 bg" style="padding: 0px line-height: 50px"><hr></hr></h3>
+	    <div class="col-sm-2 bg"></div>
+	  </div>
+	  <div class="col-sm-2 bg"></div>
+	    <div id="" class="text-center col-sm-8 bg" style="padding: 0px line-height: 50px">{{{siteBody}}}</div>
+	    <div class="col-sm-2 bg"></div>
+	  </div>
+	 
+	</div> <!-- col-sm-11-->
+	
+
+      </div>
+
+    </div>
+    
+</div>	
+	
+  <!-- /#wrapper -->
+ <!--   
+    <div class="container bg">
+      <div class="row bg">
+	<div class="col-sm-4 bg"></div>
+	<h1 id="title" class="text-center col-sm-4 bg" style=""><a href="#">j a b</a></h1>
+	<div class="col-sm-4 bg"></div>
+      </div>
+
+      <div class="row bg">
+	<div class="col-sm-3 bg"></div>
+	<h3 id="title" class="text-center col-sm-6 bg" style=""><hr></hr></h3>
+	<div class="col-sm-3 bg"></div>
+      </div>
+
+      
+    </div>
+
+  <div class="row bg">
+	<div class="col-sm-3 bg"></div>
+	<h1 id="title" class="text-center col-sm-6 bg" style="">Since I Left You</h1>
+	<div class="col-sm-3 bg"></div>
+      </div>
+
+-->
+
+
+  
+  </body>
+
+</html>
+

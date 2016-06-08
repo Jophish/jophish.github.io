@@ -1,0 +1,139 @@
+#title {
+    font-family: 'Source Sans Pro';
+    font-weight: 200;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    height: 100px;
+    line-height: 150px;
+    color: #000;
+    background: #eeeeee;
+    text-decoration: none;
+ 
+}
+
+#title2 {
+    font-family: 'Source Sans Pro';
+    font-weight: 200;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    height: 100px;
+    line-height: 100px;
+    color: #000;
+    background: #eeeeee;
+    text-decoration: none;
+ 
+}
+
+.bg {
+    background: #eeeeee;
+}
+hr {
+    display: block;
+    line-height: 0px;
+    height: 1px;
+    border: 0;
+    border-top: 1px solid #666;
+    margin: 1em 0;
+    padding: 0;
+    background: #eeeeee;
+}
+
+#title a{
+    color: #000;
+}
+#title a:hover{
+    text-decoration: none;
+}
+#title a:visited{
+    text-decoration: none;
+}
+#title a:active{
+    text-decoration: none;
+}
+html{
+    background: #eeeeee;
+    height: 100%;
+}
+
+.col-fixed-100{
+    width:100px;
+    background:red;
+    position:fixed;
+    height:100%;
+    z-index:1;
+}
+
+.col-offset-400{
+    padding-left:115px;
+    z-index:0;
+}
+
+.stuff::selection {
+    background: #eeeeee;
+}
+
+.stuff::--moz-selection{
+    background: #eeeeee;
+}
+
+#biopic {
+    padding: 1vw;
+    border: 10vw;
+    display: block;
+    #align: center;
+    #float: center;
+    #width: auto;
+    #max-height: 400px;
+
+}
+
+.info {
+    font-family: 'Source Sans Pro';
+    font-weight: 400;
+    font-size: 120%;
+
+    text-align: center;
+
+
+}
+
+.weblink {
+    color: #699fbc;
+    font-weight: 400;
+    
+    letter-spacing: 0px;
+    text-decoration: none;
+    
+}
+
+.weblink:hover{
+    text-decoration: none;
+
+}
+
+.postentry{
+    min-height: 3%;
+
+    font-size: 2vh;
+
+}
+
+#postrow{
+    font-family: 'Source Sans Pro';
+    font-weight: 200;
+    #text-decoration: none;
+    color: black;
+    font-color: black;
+    text-align: center;
+  
+}
+
+.postrow{
+    text-align: center;
+    margin: 0;
+    padding: 0;
+    color: #000;
+    text-decoration: none;
+}

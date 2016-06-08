@@ -1,0 +1,16 @@
+<!doctype HTML>
+<html lang="en">
+
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    {{header}}
+  </head>
+  <body>
+    {{sidebar}}
+
+    {{html-content}}
+
+  </body>
+
+</html>
+
