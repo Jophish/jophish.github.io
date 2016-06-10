@@ -1,0 +1,133 @@
+/*!
+ * Start Bootstrap - Simple Sidebar (http://startbootstrap.com/)
+ * Copyright 2013-2016 Start Bootstrap
+ * Licensed under MIT (https://github.com/BlackrockDigital/startbootstrap/blob/gh-pages/LICENSE)
+ */
+
+/* Toggle Styles */
+
+#wrapper {
+    padding-left: 0;
+    -webkit-transition: all 0.5s ease;
+    -moz-transition: all 0.5s ease;
+    -o-transition: all 0.5s ease;
+    transition: all 0.5s ease;
+}
+
+#wrapper.toggled {
+    padding-left: 100px;
+}
+
+#sidebar-wrapper {
+    z-index: 1000;
+    position: fixed;
+    left: 100px;
+    width: 0;
+    height: 100%;
+    margin-left: -100px;
+    #overflow-y: auto;
+    background: #000;
+    -webkit-transition: all 0.5s ease;
+    -moz-transition: all 0.5s ease;
+    -o-transition: all 0.5s ease;
+    transition: all 0.5s ease;
+}
+
+#wrapper.toggled #sidebar-wrapper {
+    width: 100px;
+}
+
+#page-content-wrapper {
+    width: 100%;
+    position: absolute;
+    padding: 0px;
+}
+
+#wrapper.toggled #page-content-wrapper {
+    position: absolute;
+    margin-right: -100px;
+}
+
+/* Sidebar Styles */
+
+.sidebar {
+    
+    left: 0;
+
+
+    top: 0;
+    margin: 0;
+    border: 0;
+    padding: 0;
+    background: black;
+    font-weight: 500;
+    #overflow: hidden;
+#	background-size: 100%;
+#	background-attachment: scroll;
+#	background-repeat: no-repeat;
+#	background-position: center center;
+	
+    
+
+}
+
+.sidebar-nav {
+    z-index: 1000;
+    background: black;
+
+    top: 0;
+    width: 100%;
+    margin: 0;
+    border: 0;
+    padding: 0;
+    #padding-bottom: 5000px;
+    list-style: none;
+    font-size: 100%;
+}
+
+.sidebar-nav li {
+    text-indent: 0;
+    line-height: 33.333vh;
+        font-family: 'Source Sans Pro';
+	font-weight: 400;
+	font-size: 1.5vh;
+	padding: 0;
+}
+
+.sidebar-nav li a {
+    text-align: center;
+    display: block;
+    text-decoration: none;
+    color: #999999;
+    text-align: center;
+    white-space: nowrap;
+  overflow: hidden;
+}
+
+.sidebar-nav li a:hover {
+    text-decoration: none;
+    color: #fff;
+    background: rgba(255,255,255,0.2);
+}
+
+.sidebar-nav li a:active,
+.sidebar-nav li a:focus {
+    text-decoration: none;
+}
+
+.sidebar-nav > .sidebar-brand {
+    height: 65px;
+    font-size: 18px;
+    line-height: 60px;
+}
+
+.sidebar-nav > .sidebar-brand a {
+    color: #999999;
+}
+
+.sidebar-nav > .sidebar-brand a:hover {
+    color: #fff;
+    background: none;
+}
+
+

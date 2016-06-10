@@ -1,0 +1,37 @@
+
+
+#custom-post-1 {
+height: 8vh;
+    margin: 2vh;
+    padding: 0vh;
+    border: 0vh
+    border-color: #d19494;
+    line-height: 8vh;
+    background: #d19494;
+
+}
+#custom-post-1:hover {
+	#text-decoration: none;
+  	color: #fff;
+	background: #fa9e9e;
+	border-color: #fa9e9e !important;
+
+}
+
+#custom-post-1 div:hover {
+	#text-decoration: none;
+  	color: #fff;
+	background: #fa9e9e;
+	border-color: #fa9e9e;
+
+}
+
+#custom-post-1 div a:hover {
+	#text-decoration: none;
+  	color: #fff;
+	background: #fa9e9e;
+	border-color: #fa9e9e;
+
+}
+
+

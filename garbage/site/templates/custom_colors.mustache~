@@ -1,0 +1,4 @@
+#custom-post-{{{id}}}:hover {
+	  	  
+	background: {{{color}}};
+}

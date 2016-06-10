@@ -1,0 +1,9 @@
+#title {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    height: 50px;
+    line-height: 50px;
+    color: white;
+    background: #006EFF;
+}
