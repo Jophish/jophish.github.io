@@ -83,12 +83,14 @@ html{
 
 } 
 #biopic {
-    padding: 1vw;
-    border: 10vw;
+    #padding: 1vw;
+    #border: 10vw;
     display: block;
-    #align: center;
-    #float: center;
-    #width: auto;
+    width:100%;
+    text-align: center;
+    align: center;
+    float: center;
+    width: auto;
     #max-height: 400px;
 
 }
