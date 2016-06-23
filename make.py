@@ -45,7 +45,8 @@ class basicPage(object):
         return ""
     def extras(self):
         return ""
-
+    def pageTitle(self):
+        return "Joe Bergeron"
 
 
         
@@ -67,6 +68,8 @@ def _render_single_post(post):
             return "../"
         def extras(self):
             return "textPost"
+        def pageTitle(self):
+            return post[1]['title'][0] + " - Joe Bergeron"
         
     #temp= "<span class='textPost'>"
     temp = renderer.render(_siteTemplate())
@@ -92,6 +95,8 @@ def _render_single_project(post):
             return "../"
         def extras(self):
             return "textPost"
+        def pageTitle(self):
+            return post[1]['title'][0] + ' - Joe Bergeron'
         
     #temp= "<span class='textPost'>"
     temp = renderer.render(_siteTemplate())
