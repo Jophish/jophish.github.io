@@ -21,6 +21,13 @@ postList = []
 
 md = markdown.Markdown(extensions=['meta','markdown.extensions.fenced_code','markdown.extensions.codehilite',])
 
+#get project dirs here
+
+projDirs = [x[0] for x in os.listdir("./projects-source")]
+print(projDirs)
+
+
+
 class basicPage(object):
     def about(self):
         return 'a b o u t'
@@ -33,14 +40,17 @@ class basicPage(object):
     def indexLink(self):
         return "index.html"
     def projectsLink(self):
-        return "#"
+        return "projects.html"
     def upDir(self):
         return ""
     def extras(self):
         return ""
 
+
+
+        
 def _render_single_post(post):
-    
+    print(file)
     htmlPost = open('./posts/'+ file[0:len(file)-3]+'.html', 'w+')
 
     renderer.load_template('site_template')
@@ -52,7 +62,7 @@ def _render_single_post(post):
         def indexLink(self):
             return "../index.html"
         def projectsLink(self):
-            return "#"
+            return "../projects.html"
         def upDir(self):
             return "../"
         def extras(self):
@@ -63,6 +73,49 @@ def _render_single_post(post):
     #temp += "</span>"
     htmlPost.write(temp)
     htmlPost.close()
+
+
+def _render_single_project(post):
+    htmlPost = open('./projects/'+ post[-1][0:len(post[-1])-3]+'.html', 'w+')
+    
+    renderer.load_template('site_template')
+    class _siteTemplate(basicPage):
+        def siteBody(self):
+            return post[0]
+        def aboutLink(self):
+            return "../about.html"
+        def indexLink(self):
+            return "../index.html"
+        def projectsLink(self):
+            return "../projects.html"
+        def upDir(self):
+            return "../"
+        def extras(self):
+            return "textPost"
+        
+    #temp= "<span class='textPost'>"
+    temp = renderer.render(_siteTemplate())
+    #temp += "</span>"
+    htmlPost.write(temp)
+    htmlPost.close()
+    
+projFiles = []
+
+for dir in projDirs:
+    markDown =  [x for x in os.listdir("./projects-source/"+dir+"/md/") if '~' not in x][0]
+    with open("./projects-source/"+dir+"/md/"+markDown) as myfile:
+        html = myfile.read()
+        temp = []
+        temp.append(md.convert(html))
+
+        temp.append(md.Meta)
+        temp.append(markDown)
+        projFiles.append(temp)
+        print(temp)
+        _render_single_project(temp)
+        
+    
+
 
     
 for file in files:
@@ -88,6 +141,37 @@ for file in files:
 
 
 
+def render_projects():
+
+    bodyString = ""
+    cssString = ""
+    
+    renderer.load_template("project_entry")
+    
+    for proj in projFiles:
+        class _projectEntry(object):
+            def title(self):
+                return proj[1]['title'][0]
+            def link(self):
+                return './projects/'+ proj[2][0:len(proj[2])-3]+".html"
+            def photo(self):
+                return './projects-source/'+proj[1]['postnum'][0]+'/cover.jpg'
+
+        bodyString += renderer.render(_projectEntry())
+
+
+    class _siteTemplate(basicPage):
+            def projects(self):
+                return '| p r o j e c t s |'
+            def siteBody(self):
+                return bodyString
+            
+    renderer.load_template('site_template')
+    rendered_projects = open("projects.html", "w+")
+    rendered_projects.write(renderer.render(_siteTemplate()))
+    rendered_projects.close()
+
+    
 
     
 def render_about():
@@ -100,7 +184,6 @@ def render_about():
                 return '| a b o u t |'
             def siteBody(self):
                 return str(about_template)
-            
         rendered_about = open("about.html", "w+")
         rendered_about.write(renderer.render(_siteTemplate()))
         rendered_about.close()
@@ -162,3 +245,4 @@ def render_index():
     
 render_about()
 render_index()
+render_projects()

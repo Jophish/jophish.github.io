@@ -1,0 +1,8 @@
+
+<div class="row projectEntry">
+  <div class="col-sm-12">
+    <a href="{{{link}}}" class="postrow">{{title}} <span class="clickable"</span></a>
+    </div>
+</div>
+
+
