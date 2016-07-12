@@ -35,9 +35,17 @@
 	  <script type="text/javascript">
 
 
-	    
+	    $(document).ready(function(){
 
+	     $('#sidebar').css('height', Math.max($(window).height() * 0.65, $("#stuff").height()));
 	    
+	    console.log($("#stuff").height());
+	    });
+	    console.log($("#stuff").height());
+	    $(window).load(function(){
+	    $('#sidebar').css('height', Math.max($(window).height() * 0.65, $("#stuff").height()));
+	    console.log($("#stuff").height());
+	    })
 	    $(function() {
 	    function unifyHeights() {
 
@@ -73,8 +81,8 @@
 	    }
 	    else{
 
-            $('#sidebar').css('height', maxHeight);
-	    $('#sidebar').css('min-height', '100vh');
+            $('#sidebar').css('height', Math.max($(window).height() * 0.65, $("#stuff").height()));
+	    
 	    }
 	    }
 	    
@@ -84,7 +92,8 @@
 
 	    $(window).resize(function() {
 	    if( $(this).width() > 480 ) {
-            unifyHeights();
+              unifyHeights();
+	     $('#sidebar').css('height', Math.max($(window).height() * 0.65, $("#stuff").height()));
 	    
 	    
 	    }

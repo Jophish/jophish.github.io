@@ -1,3 +1,7 @@
+import sys
+sys.path.append('./pystache')
+sys.path.append('./markdown')
+sys.path.append('./colour')
 import pygments
 import pystache
 import markdown
