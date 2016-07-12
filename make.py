@@ -143,7 +143,7 @@ for file in files:
 
             
 
-
+postList.sort(key=lambda x: x[1]['postnum'][0], reverse=True)
 # sort list by dates here, convert to standard format first
 
 
