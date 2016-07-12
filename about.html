@@ -2,7 +2,8 @@
 <html lang="en" style="height: 100%">
   
   <head class="bg">
-
+    <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+    <meta content="utf-8" http-equiv="encoding">
 
     <link rel="me" href="https://github.com/jophish" />
     <link rel="me" href="https://soundcloud.com/morningsounds" />
@@ -14,138 +15,62 @@
     <link rel="stylesheet" href="assets/css/bootstrap.css" type="text/css" />
     <link rel="stylesheet" href="assets/css/custom.css" type="text/css" />
     <link rel="stylesheet" href="assets/css/custom_colors.css" type="text/css" />
-    <script type="text/javascript" src="assets/js/bootstrap.js"></script>
+    
     <script type="text/javascript" src="assets/js/jquery.js"></script>
-
+    <script type="text/javascript" src="assets/js/bootstrap.js"></script>
+    <script type="text/javascript" src="assets/js/custom.js"></script>
+    <script type="text/javascript" src="assets/js/analytics.js"></script>
+    
     <meta name="viewport" content="width=device-width, initial-scale=1">
-      <link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,200,300,200italic,300italic,400italic' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,200,300,200italic,300italic,400italic' rel='stylesheet' type='text/css'>
+    
+    <link href="assets/css/simple-sidebar.css" rel="stylesheet">
+
+    
+    
+
+    
+  </head>
+  
+  <body class="bg" style="height: 100%">
+    <!-- sidebar here-->
+    <div class="container-fluid bg" style="height: 100%">
+      <div class="row bg" style="height: auto" id="mainRow">
 	
-	<link href="assets/css/simple-sidebar.css" rel="stylesheet">
 
-	<script>
-  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	<div class="col-sm-1 sidebar" id="sidebar">
 
-  ga('create', 'UA-79178224-1', 'auto');
-  ga('send', 'pageview');
+	  <ul class="sidebar-nav">
+            <li>
+              <a href="about.html">| a b o u t |</a>
+            </li>
+            <li>
+              <a href="index.html">p o s t s</a>
+            </li>
+            <li>
+              <a href="projects.html">p r o j e c t s</a>
+            </li>
+	  </ul>
+	</div>
 
-</script>
-	  <script type="text/javascript">
+	<div class="col-sm-11 bg stuff" style="height: auto" id="stuff">
+	  <div class="container-fluid" style="width: 100%; height: 100%">
+	    <div class="row bg">
+	      <div class="col-sm-3 bg"></div>
+	      <h1 id="title" class="text-center col-sm-6 bg" style=""><a href="index.html">j  a  b</a></h1>
+	      <div class="col-sm-3 bg"></div>
+	    </div>
 
-
-	    $(document).ready(function(){
-
-	     $('#sidebar').css('height', Math.max($(window).height() * 0.65, $("#stuff").height()));
-	    
-	    console.log($("#stuff").height());
-	    });
-	    console.log($("#stuff").height());
-	    $(window).load(function(){
-	    $('#sidebar').css('height', Math.max($(window).height() * 0.65, $("#stuff").height()));
-	    console.log($("#stuff").height());
-	    })
-	    $(function() {
-	    function unifyHeights() {
-
-
-	    function findBootstrapEnvironment() {
-	    var envs = ['xs', 'sm', 'md', 'lg'];
-
-	    var $el = $('<div>');
-	    $el.appendTo($('body'));
-
-	    for (var i = envs.length - 1; i >= 0; i--) {
-            var env = envs[i];
-
-            $el.addClass('hidden-'+env);
-            if ($el.is(':hidden')) {
-            $el.remove();
-            return env;
-            }
-	    }
-
-	    }  
-	    
-            var maxHeight = 0;
-            $('#mainRow').children('#sidebar, #stuff').each(function() {
-            var height = $(this).outerHeight();
-            // alert(height);
-            if ( height > maxHeight ) {
-            maxHeight = height;
-            }
-            });
-	    if (findBootstrapEnvironment() == 'sm'|| findBootstrapEnvironment() == 'xs'){
-	    return;
-	    }
-	    else{
-
-            $('#sidebar').css('height', Math.max($(window).height() * 0.65, $("#stuff").height()));
-	    
-	    }
-	    }
-	    
-	    unifyHeights();
-	    
-	    });
-
-	    $(window).resize(function() {
-	    if( $(this).width() > 480 ) {
-              unifyHeights();
-	     $('#sidebar').css('height', Math.max($(window).height() * 0.65, $("#stuff").height()));
-	    
-	    
-	    }
-	    else{
-	    $('#sidebar').css('height', '0px');
-	    $('#sidebar').css('height', '0px');
-	    }
-	    });
-	  </script>
-
-	  
-	</head>
-	
-	<body class="bg" style="height: 100%">
-	  <!-- sidebar here-->
-	  <div class="container-fluid bg" style="height: 100%">
-	    <div class="row bg" style="height: auto" id="mainRow">
+	    <div class="row bg">
+	      <div class="col-sm-2 bg"></div>
 	      
-
-	      <div class="col-sm-1 sidebar" id="sidebar">
-
-		<ul class="sidebar-nav">
-                  <li>
-                    <a href="about.html">| a b o u t |</a>
-                  </li>
-                  <li>
-                    <a href="index.html">p o s t s</a>
-                  </li>
-                  <li>
-                    <a href="projects.html">p r o j e c t s</a>
-                  </li>
-		</ul>
-	      </div>
-
-	      <div class="col-sm-11 bg stuff" style="height: auto" id="stuff">
-		<div class="container-fluid" style="width: 100%; height: 100%">
-		  <div class="row bg">
-		    <div class="col-sm-3 bg"></div>
-		    <h1 id="title" class="text-center col-sm-6 bg" style=""><a href="index.html">j  a  b</a></h1>
-		    <div class="col-sm-3 bg"></div>
-		  </div>
-
-		  <div class="row bg">
-		    <div class="col-sm-2 bg"></div>
-		    
-		    <h3 class="text-center col-sm-8 bg" style="padding: 0px line-height: 50px"><hr></hr></h3>
-		    <div class="col-sm-2 bg"></div>
-		  </div>
-		  <div class="col-sm-2 bg"></div>
-		  <div class="text-center col-sm-8 bg" style="height: 100%; padding: 0px;">
-		    <div class="container-fluid " style="height: 100%; font-family: 'Source Sans Pro';">
-		      <div class="row">
+	      <h3 class="text-center col-sm-8 bg" style="padding: 0px line-height: 50px"><hr></hr></h3>
+	      <div class="col-sm-2 bg"></div>
+	    </div>
+	    <div class="col-sm-2 bg"></div>
+	    <div class="text-center col-sm-8 bg" style="height: 100%; padding: 0px;">
+	      <div class="container-fluid " style="height: 100%; font-family: 'Source Sans Pro';">
+		<div class="row">
   
   
   <div class="col-sm-6 info"><p class="info">
@@ -180,18 +105,18 @@
   </div>
 </div>
 
-		    </div>
-		  </div>
-		  <div class="col-sm-2 bg"></div>
-		</div>
-		
 	      </div>
-	      
 	    </div>
-
+	    <div class="col-sm-2 bg"></div>
 	  </div>
+	  
+	</div>
 	
-      </body>
+      </div>
 
-    </html>
+    </div>
+    
+  </body>
+
+</html>
 
