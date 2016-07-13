@@ -162,7 +162,7 @@ def render_projects():
             def link(self):
                 return './projects/'+ proj[2][0:len(proj[2])-3]+".html"
             def photo(self):
-                return './projects-source/'+proj[1]['postnum'][0]+'/cover.jpg'
+                return './projects-source/'+proj[1]['postnum'][0]+'/cover.png'
 
         bodyString += renderer.render(_projectEntry())
 
