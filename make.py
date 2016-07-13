@@ -28,7 +28,6 @@ md = markdown.Markdown(extensions=['meta','markdown.extensions.fenced_code','mar
 #get project dirs here
 
 projDirs = [x[0] for x in os.listdir("./projects-source")]
-print(projDirs)
 
 
 
@@ -55,7 +54,7 @@ class basicPage(object):
 
         
 def _render_single_post(post):
-    print(file)
+
     htmlPost = open('./posts/'+ file[0:len(file)-3]+'.html', 'w+')
 
     renderer.load_template('site_template')
@@ -120,7 +119,6 @@ for dir in projDirs:
         temp.append(md.Meta)
         temp.append(markDown)
         projFiles.append(temp)
-        print(temp)
         _render_single_project(temp)
         
     
@@ -143,7 +141,7 @@ for file in files:
 
             
 
-postList.sort(key=lambda x: x[1]['postnum'][0], reverse=True)
+postList.sort(key=lambda x: x[1]['postnum'][0], reverse=False)
 # sort list by dates here, convert to standard format first
 
 
@@ -200,7 +198,7 @@ def render_about():
 def render_index():
     bodyString = ""
     cssString = ""
-    
+    bodyList = []
     renderer.load_template('post_entry')
     
     r = lambda: random.randint(0,255)
@@ -216,12 +214,10 @@ def render_index():
                 return str(count)
             def link(self):
                 return './posts/'+ post[2][0:len(post[2])-3]+'.html'
-        
-        bodyString += renderer.render(_postEntry())
-        
-
+            
+        bodyList.append(renderer.render(_postEntry()))
         renderer.load_template('custom_colors')
-
+        
         class _customColors(object):
             def color(self):
                 return  Color(hsl = (init_col.hsl[0], .9, .8)).hex
@@ -236,6 +232,9 @@ def render_index():
         count += 1;
         init_col = Color(hsl = (init_col.hsl[0]+ inc, .4,.7))
 
+    for text in reversed(bodyList):
+        bodyString += text
+    
     class _siteTemplate(basicPage):
             def posts(self):
                 return '| p o s t s |'
@@ -255,3 +254,4 @@ def render_index():
 render_about()
 render_index()
 render_projects()
+print("good job kid")
