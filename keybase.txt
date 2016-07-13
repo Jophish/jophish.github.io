@@ -1,0 +1,68 @@
+==================================================================
+https://keybase.io/joebergeron
+--------------------------------------------------------------------
+
+I hereby claim:
+
+  * I am an admin of http://joebergeron.io
+  * I am joebergeron (https://keybase.io/joebergeron) on keybase.
+  * I have a public key with fingerprint 26F4 98D8 5D3B 5C25 02CE  1DE2 72E2 2D69 9477 F922
+
+To do so, I am signing this object:
+
+{
+    "body": {
+        "key": {
+            "eldest_kid": "01012144b4686573ba2d0b7ea3c10487a6091915a1465951af9ce002b272a9ee6c1d0a",
+            "fingerprint": "26f498d85d3b5c2502ce1de272e22d699477f922",
+            "host": "keybase.io",
+            "key_id": "72e22d699477f922",
+            "kid": "01012144b4686573ba2d0b7ea3c10487a6091915a1465951af9ce002b272a9ee6c1d0a",
+            "uid": "2e9b40ff1b95926aa64b74389417ab19",
+            "username": "joebergeron"
+        },
+        "service": {
+            "hostname": "joebergeron.io",
+            "protocol": "http:"
+        },
+        "type": "web_service_binding",
+        "version": 1
+    },
+    "ctime": 1468402268,
+    "expire_in": 157680000,
+    "prev": "b2a825408ae169513d8e92ec803d461cc0e436e92db75187cdc12f2bf8376ac8",
+    "seqno": 5,
+    "tag": "signature"
+}
+
+which yields the signature:
+
+-----BEGIN PGP MESSAGE-----
+Version: Keybase OpenPGP v2.0.53
+Comment: https://keybase.io/crypto
+
+yMIkAnicrVJdSBRRGN3NVXGhktQkpaQJIlRy7t35XWQLol+sLPp50Frvnbmj0647
+2+y4aWUU0aZFRJFQCZVEghXqQ0mUSYWQ5suKPhQZCRoVhP1JhAtbd6ye6rH7crnf
+d875zvm4/XNTHG5n/qq2tDLHkqXOocetdY7dMXflIQYbagPjPcQEyOxFgiqJWP6A
+rjJehgUsgIDjMCdIAi96MIIqi0WCPApgOUlEAisDGfAIcAIv8wBpskJYFmIoQiQT
+IihAZRFTzGh6qJqYYVMPWVQWChonS6rEqx7MK5BnoUKASiiJQKgKssyJoiZDSIk1
+RsRmUHMYRchK3aA1+vDP2vsH/j/7rpuVg0TGHKtpAMu8DAWEBA6LnEeSOSAiDGQb
+GCFmCNUSit5nEExMGtcIMY3FDG1EdYXYu7XD/A36FSpsGpahGEHaq7GssNemWg1h
+G3uAYP9vFT/WQyrdJSVEiRnR6QgvoEjF0m1ZGkfiWAgFqZgh9WHdJH7dRvCiILH0
+2GNIlEpiiCTIc6yECBDoAjyqRGRIFIn1qJwAFIUlnEegJRWLPJBERVUA1CDWJI8o
+IEVi7Fz7Qwbj5alNVE0lI3p1CFl1JmEanzyqdDmcbkda6hz7jzncGZl/fp5vOj1Z
+VPU141Ii9crNgbUlq2KoK1YyvMB38cSbzznND4OOs1ntyYIjmwrip/K7+3I31uaF
+4gMrlT5f3qSb7bnR1BGduJN3d/jD1Zz+3haj81rhhYS1RQuuGz+2ev25B4PrXVu7
+L3vjwttF2e9Ltxy931h6/Hhy266J22XZn7KcH1O/T7XCefL8cM9o/NVQJjNSdjD/
+5Qox4HINny8c9DU7LqW4pzvKi76lXG/r+lKfCFSMlsRPPml56t/xgvTueLC8k9+T
+u72lqPfexuQP8d1k3+aBnWsWv841Ew9vlR+O7mxPXzhWkDkzr6qiLeZsGp86tbff
+u+x5MmdD1fwR/xl9ZuxZJOv0T6q+OBA=
+=CNjT
+-----END PGP MESSAGE-----
+
+And finally, I am proving ownership of this host by posting or
+appending to this document.
+
+View my publicly-auditable identity here: https://keybase.io/joebergeron
+
+==================================================================
