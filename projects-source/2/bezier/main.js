@@ -15,7 +15,7 @@ container.appendChild(renderer.domElement);
 var scene = new THREE.Scene;
 
 
-var numpts = 5;
+var numpts = 20;
 veclist = [];
 for (x = 0; x < numpts; x++){
     veclist.push(randvec(30));
@@ -68,11 +68,12 @@ rendererStats.domElement.style.bottom   = '0px'
 
 
 var FizzyText = function() {
-    this.numPoints = 5;
+    this.numPoints = 20;
   this.speed = 0.8;
   this.showLines = false;
   this.showLines = true;
-  this.showLines = false;
+    this.showLines = false;
+    this.showLines = true;
   this.showPoints = false;
   this.showCurve = true;
   this.showIntermediateCurves = false;
@@ -138,12 +139,12 @@ foo.toggleMidCurves(text.showIntermediateCurves);
 foo.togglePoints(text.showPoints);   
 });
 
-foo.toggleLines(false, true); 
+foo.toggleLines(true, true); 
 foo.toggleOutline(false); 
 foo.toggleCurve(true);
 foo.toggleMidCurves(false);
 foo.togglePoints(false);
-
+gui.close();
 render();
 function render() {
     lastnum = text.numPoints;
