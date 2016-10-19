@@ -28,7 +28,7 @@
     #overflow-y: auto;
     background: #000;
     -webkit-transition: all 0.5s ease;
-    -moz-transition: all 0.5s ease;g
+    -moz-transition: all 0.5s ease;
     -o-transition: all 0.5s ease;
     transition: all 0.5s ease;
 }
@@ -54,12 +54,12 @@
     
     left: 0;
 
-
+    #width: 100px;
     top: 0;
     margin: 0;
     border: 0;
     padding: 0;
-    background: black;
+#    background: black;
     font-weight: 500;
     #overflow: hidden;
 #	background-size: 100%;
@@ -76,7 +76,9 @@
     background: black;
 
     top: 0;
+    #width: 100px;
     width: 100%;
+    max-width: 120px;
     margin: 0;
     border: 0;
     padding: 0;
@@ -90,7 +92,7 @@
     line-height: 33.333vh;
         font-family: 'Source Sans Pro';
 	font-weight: 400;
-	font-size: 1.5vh;
+	font-size: 1em;;
 	padding: 0;
 }
 

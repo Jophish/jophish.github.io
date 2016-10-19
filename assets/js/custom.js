@@ -25,7 +25,7 @@ $(document).ready(function(){
 	
     }
     else{
-        $('#sidebar').css('height', Math.max($(window).height(), $("#stuff").height()));
+        $('#sidebar-nav').css('height', Math.max($(window).height(), $("#stuff").height()));
 	$("#stuff").css('height','auto');
     }
     
