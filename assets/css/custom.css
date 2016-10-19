@@ -97,11 +97,11 @@ html{
 }
 
 .postImage {
-  width: 140%;
+  width: 130%;
   #position: absolute;
   left: 50%;
  top: 0;
-  margin-left: -20%;
+  margin-left: -15%;
 }
 .imageCenterer img{
   display: block;
