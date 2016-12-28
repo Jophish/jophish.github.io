@@ -19,13 +19,21 @@ function findBootstrapEnvironment() {
 $(document).ready(function(){
     
     if (findBootstrapEnvironment() == 'ExtraSmall') {
-	$('#sidebar').css('height', $(window).height());
-	$('#stuff').css('height', Math.max($(window).height(), $("#stuff").height()));
-	
+      $('#sidebar').css('height', $(window).height());
+      $('#sidebar').css('max-width', $(window).width());
+      $('#sidebar').css('width', $(window).width());
+      $('#sidebar-button').css('width', $(window).width());
+      
+      $('#stuff').css('height', Math.max($(window).height(), $("#stuff").height()));
+      $('.sidebar-nav').css('max-width', 'none');
+      
 	
     }
-    else{
-        $('#sidebar-nav').css('height', Math.max($(window).height(), $("#stuff").height()));
+  else{
+     $('.sidebar-nav').css('max-width', '120px');
+    $('#sidebar-nav').css('height', Math.max($(window).height(), $("#stuff").height()));
+    //$('#sidebar').css('width', 'auto');
+      $('#sidebar').css('max-width', '100px');
 	$("#stuff").css('height','auto');
     }
     
@@ -37,14 +45,21 @@ $(document).ready(function(){
 $(window).load(function(){
     if (findBootstrapEnvironment() == 'ExtraSmall') {
 	
-	$('#sidebar').css('height', $(window).height());
-	$('#stuff').css('height', Math.max($(window).height(), $("#stuff").height()));
+      $('#sidebar').css('height', $(window).height());
+      $('#sidebar').css('max-width', $(window).width());
+      $('#sidebar').css('width', $(window).width());
+      $('#sidebar-button').css('width', $(window).width());
+      $('#stuff').css('height', Math.max($(window).height(), $("#stuff").height()));
+       $('.sidebar-nav').css('max-width', 'initial');
 	
 	
     }
-    else{
-        $('#sidebar').css('height', Math.max($(window).height(), $("#stuff").height()));
-	$("#stuff").css('height','auto');
+  else{
+     $('.sidebar-nav').css('max-width', '120px');
+      $('#sidebar').css('height', Math.max($(window).height(), $("#stuff").height()));
+            $('#sidebar').css('max-width', '100px');
+    $("#stuff").css('height','auto');
+    //$('#sidebar').css('width', 'auto');
     }
 
     
@@ -58,15 +73,22 @@ $(window).resize(function() {
     console.log(findBootstrapEnvironment());
     
     if (findBootstrapEnvironment() == 'ExtraSmall') {
-	$('#sidebar').css('height', $(window).height());
-	$('#stuff').css('height', Math.max($(window).height(), $("#stuff").height()));
+      $('#sidebar').css('height', $(window).height());
+       $('#sidebar').css('max-width', $(window).width());
+      $('#sidebar').css('width', $(window).width());
+      $('#sidebar-button').css('width', $(window).width());
+      $('#stuff').css('height', Math.max($(window).height(), $("#stuff").height()));
+       $('.sidebar-nav').css('max-width', 'initial');
 	
 	
     }
     
-    else{
-        $('#sidebar').css('height', Math.max($(window).height(), $("#stuff").height()));
-	$("#stuff").css('height','auto');
+  else{
+     $('.sidebar-nav').css('max-width', '120px');
+      $('#sidebar').css('height', Math.max($(window).height(), $("#stuff").height()));
+         $('#sidebar').css('max-width', '100px');
+    $("#stuff").css('height','auto');
+    //$('#sidebar').css('width', 'auto');
     }
     
 });
