@@ -129,8 +129,10 @@ for file in files:
 
         if file[len(file)-2:len(file)] == "md":
             html = myfile.read()
+            pre = '<div class=\"text-post\">'
+            suf = '<\\div>'
             temp = []
-            temp.append(md.convert(html))
+            temp.append(pre+md.convert(html)+suf)
 
             temp.append(md.Meta)
             temp.append(file)

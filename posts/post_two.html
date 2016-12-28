@@ -73,7 +73,7 @@
 	    <div class="col-sm-2 bg"></div>
 	    <div class="text-center col-sm-8 bg" style="height: 100%; padding: 0px;">
 	      <div id ="main-body"class="container-fluid textPost" style="height: 100%; font-family: 'Source Sans Pro';">
-		<h1>Writing a Tiny x86 Bootloader</h1>
+		<div class="text-post"><h1>Writing a Tiny x86 Bootloader</h1>
 <p><br></br>
 <i>All the code/files from this post are available on my <a href="https://github.com/Jophish/tiny-bootstrap">Github</a>.</i>
 <br></br>
@@ -299,7 +299,7 @@ display_library: x, <span class="nv">options</span><span class="o">=</span><span
 
 
 <p>This will copy the first 512 bytes of your bootloader (read: all of it), to the first 512 bytes of your USB drive. If you want to make sure everything copied over all well and good, you can let <em>if=/dev/sdb</em> and <em>of=test.com</em>, then diff the two files. They should be identical. Then, it's just a matter of restarting your computer (and potentially changing boot priority to boot from USB first), and you should see the same boring text you see in an emulator just minutes ago. Well done.</p>
-<p>It should be said, again, that most <em>real</em> bootloaders are orders of magnitutde more complex than this one, however I think this is a pretty good proof of concept/learning tool. <em>Hopefully</em> you learned something from this - I certainly did, even if the end result was far more underwhelming than I expected it to be. </p>
+<p>It should be said, again, that most <em>real</em> bootloaders are orders of magnitutde more complex than this one, however I think this is a pretty good proof of concept/learning tool. <em>Hopefully</em> you learned something from this - I certainly did, even if the end result was far more underwhelming than I expected it to be. </p><\div>
 	      </div>
 	    </div>
 	    <div class="col-sm-2 bg"></div>

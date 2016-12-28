@@ -25,6 +25,10 @@ border: 0;
 
 
 }
+
+.text-post{
+    text-align: left;
+}
 #main-body {
     max-width: 1000px;
 
