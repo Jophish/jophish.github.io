@@ -76,7 +76,9 @@
 		<div class="text-post"><h1>Writing a Tiny x86 Bootloader</h1>
 <p><br></br>
 <i>All the code/files from this post are available on my <a href="https://github.com/Jophish/tiny-bootstrap">Github</a>.</i>
-<br></br>
+<br></br></p>
+<p><i> Edit: After some discussion by the <a href="https://news.ycombinator.com/item?id=13268781">good people on Hacker News</a>, it's become clear that when in 16-bit real mode, it's best to use 2-byte registers bp, sp, instead of the 4-byte esb, esp. The article and code have been updated to reflect this.</i></p>
+<p><br></br>
 It might be from being stuck at home with nothing to do over break, or it might be from an <em>actual interest</em> in low-level systems design, but I've taken it upon myself to learn more about OS implementation, starting with the bootloader. So, here we go. All of this information exists in various other places on the web, but there's no better way to learn than by teaching, right? Either way, this piece should serve as primer on what exactly a bootloader does and how to implement a relatively simple one (compared to a beast like <a href="https://en.wikipedia.org/wiki/GNU_GRUB">GRUB</a> which is ostensibly its own little operating system).</p>
 <h2>What is a bootloader?</h2>
 <p>When a computer boots up, the job of getting from nothing to a functioning operating system involves a number of steps. The first thing that happens on an x86 PC is the operation of the BIOS. We'll eschew the discussion of the intricacies of how the BIOS works, but here's what you need to know. When you turn your computer on, the processor immediately looks at physical address 0xFFFFFFF0 for the BIOS code, which is generally on some read-only piece of ROM somewhere in your computer. The BIOS then POSTs, and searches for acceptable boot media. The BIOS accepts some medium as an acceptable boot device if its <em>boot sector</em>, the first 512 bytes of the disk are readable and end in the exact bytes 0x55AA, which constitutes the boot signature for the medium. If the BIOS deems some drive bootable, then it loads the first 512 bytes of the drive into memory address 0x007C00, and transfers program control to this address with a jump instruction to the processor.</p>
@@ -112,8 +114,8 @@ It might be from being stuck at home with nothing to do over break, or it might 
 <p>Alright, now that all that is out of the way, let's figure out a way to clear the screen, move the pointer, and write some text. This is where real mode and BIOS interrupt calls come in to play. By storing certain registers with certain parameters and then sending a particular opcode to the BIOS as an interrupt, we can do a bunch of cool stuff. For example, by storing 0x07 in the AH register and sending interrupt code 0x10 to the BIOS, we can scroll the window down by a number of rows. See the spec <a href="http://www.ctyme.com/intr/rb-0097.htm">here</a>. Note that the registers AH and AL refer to the most and least significant bytes of the 16 bit register AX. Thus, we could effectively update both their values at once by simply pushing a 16 bit value to AX, however, we'll opt for the clearer approach of updating each 1-byte subregister at a time.</p>
 <p>If you look at the spec, you'll see that we need to set AH to 0x07, and AL to 0x00. the value of register BH refers to the <a href="https://en.wikipedia.org/wiki/BIOS_color_attributes">BIOS color attribute</a>, which for our purposes will be black background (0x0) behind light-gray (0x7) text, so we must set BH to 0x07. Registers CX and DX refer to the subsection of the screen that we want to clear. The standard number of character rows/cols here is 25/80, so we set CH and CL to 0x00 to set (0,0) as the top left of the screen to clear, and DH as 0x18 = 24, DL as 0x4f = 79. Putting this all together in a function, we get the following snippet.</p>
 <div class="codehilite"><pre><span></span><span class="nl">clearscreen:</span>
-    <span class="nf">push</span> <span class="no">ebp</span>
-    <span class="nf">mov</span> <span class="no">ebp</span><span class="p">,</span> <span class="no">esp</span>
+    <span class="nf">push</span> <span class="no">bp</span>
+    <span class="nf">mov</span> <span class="no">bp</span><span class="p">,</span> <span class="no">sp</span>
     <span class="nf">pusha</span>
 
     <span class="nf">mov</span> <span class="no">ah</span><span class="p">,</span> <span class="mi">0x07</span>        <span class="c"># tells BIOS to scroll down window</span>
@@ -125,8 +127,8 @@ It might be from being stuck at home with nothing to do over break, or it might 
     <span class="nf">int</span> <span class="mi">0x10</span>            <span class="c"># calls video interrupt</span>
 
     <span class="nf">popa</span>
-    <span class="nf">mov</span> <span class="no">esp</span><span class="p">,</span> <span class="no">ebp</span>
-    <span class="nf">pop</span> <span class="no">ebp</span>
+    <span class="nf">mov</span> <span class="no">sp</span><span class="p">,</span> <span class="no">bp</span>
+    <span class="nf">pop</span> <span class="no">bp</span>
     <span class="nf">ret</span>
 </pre></div>
 
@@ -135,23 +137,23 @@ It might be from being stuck at home with nothing to do over break, or it might 
 <p>Nice. Now let's write a subroutine for moving the cursor to an arbitrary (row,col) position on the screen. <a href="http://www.ctyme.com/intr/rb-0087.htm">Int 10/AH=02h</a> does this nicely. This subroutine will be slightly different, since we'll need to pass it an argument. According to the spec, we must set register DX to a two byte value, the first representing the desired row, and second the desired column. AH has gotta be 0x02, BH represents the page number we want to move the cursor to. This parameter has to do with the fact that the BIOS allows you to draw to off-screen pages, in order to facilitate smoother visual transitions by rendering off-screen content before it is shown to the user. This is called <em>multiple</em> or <em>double buffering</em>. We don't really care about this, however, so we'll just use the default page of 0.</p>
 <p>Putting it all together, we have the following subroutine.</p>
 <div class="codehilite"><pre><span></span><span class="nl">movecursor:</span>
-    <span class="nf">push</span> <span class="no">ebp</span>
-    <span class="nf">mov</span> <span class="no">ebp</span><span class="p">,</span> <span class="no">esp</span>
+    <span class="nf">push</span> <span class="no">bp</span>
+    <span class="nf">mov</span> <span class="no">bp</span><span class="p">,</span> <span class="no">sp</span>
     <span class="nf">pusha</span>
 
-    <span class="nf">mov</span> <span class="no">dx</span><span class="p">,</span> <span class="p">[</span><span class="no">ebp</span><span class="err">+</span><span class="mi">6</span><span class="p">]</span>     <span class="c"># get the argument from the stack. |ebp| = 4, |arg| = 2</span>
-    <span class="nf">mov</span> <span class="no">ah</span><span class="p">,</span> <span class="mi">02</span><span class="no">h</span>         <span class="c"># set cursor position</span>
-    <span class="nf">mov</span> <span class="no">bh</span><span class="p">,</span> <span class="mi">00</span><span class="no">h</span>         <span class="c"># page 0 - doesn&#39;t matter, we&#39;re not using double-buffering</span>
-    <span class="nf">int</span> <span class="mi">10</span><span class="no">h</span>
+    <span class="nf">mov</span> <span class="no">dx</span><span class="p">,</span> <span class="p">[</span><span class="no">bp</span><span class="err">+</span><span class="mi">4</span><span class="p">]</span>      <span class="c"># get the argument from the stack. |bp| = 2, |arg| = 2</span>
+    <span class="nf">mov</span> <span class="no">ah</span><span class="p">,</span> <span class="mi">0x02</span>        <span class="c"># set cursor position</span>
+    <span class="nf">mov</span> <span class="no">bh</span><span class="p">,</span> <span class="mi">0x00</span>        <span class="c"># page 0 - doesn&#39;t matter, we&#39;re not using double-buffering</span>
+    <span class="nf">int</span> <span class="mi">0x10</span>
 
     <span class="nf">popa</span>
-    <span class="nf">mov</span> <span class="no">esp</span><span class="p">,</span> <span class="no">ebp</span>
-    <span class="nf">pop</span> <span class="no">ebp</span>
+    <span class="nf">mov</span> <span class="no">sp</span><span class="p">,</span> <span class="no">bp</span>
+    <span class="nf">pop</span> <span class="no">bp</span>
     <span class="nf">ret</span>
 </pre></div>
 
 
-<p>The only thing that might look unusual is the <strong>mov dx, [ebp+6]</strong>. This moves the argument we passed into the DX register. The reason we offset by 6 is that the contents of ebp takes up 4 bytes on the stack, and the argument takes up two bytes, so we have to offset a total of 6 bytes from the actual address of ebp. Note also that the caller has the responsibility to clean the stack after the callee returns, which amounts to removing the arguments from the top of the stack by moving the stack pointer.</p>
+<p>The only thing that might look unusual is the <strong>mov dx, [bp+4]</strong>. This moves the argument we passed into the DX register. The reason we offset by 4 is that the contents of bp takes up 2 bytes on the stack, and the argument takes up two bytes, so we have to offset a total of 4 bytes from the actual address of bp. Note also that the caller has the responsibility to clean the stack after the callee returns, which amounts to removing the arguments from the top of the stack by moving the stack pointer.</p>
 <p>The final subroutine we want to write is simply one that, given a pointer to the beginning of a string, prints that string to the screen beginning at the current cursor position. Using the video interrupt code with <a href="http://www.ctyme.com/intr/rb-0106.htm">AH=0Eh</a> works nicely. First off, we can define some data and store a pointer to its starting address with something that looks like this.</p>
 <div class="codehilite"><pre><span></span>    <span class="nl">msg:</span>    <span class="nf">db</span> <span class="err">&quot;</span><span class="no">Oh</span> <span class="no">boy</span> <span class="no">do</span> <span class="no">I</span> <span class="no">sure</span> <span class="no">love</span> <span class="no">assembly</span><span class="p">!</span><span class="err">&quot;</span><span class="p">,</span> <span class="mi">0</span>
 </pre></div>
@@ -159,24 +161,24 @@ It might be from being stuck at home with nothing to do over break, or it might 
 
 <p>The 0 at the end terminates the string with a null character, so we'll know when the string is done. We can reference the address of this string with <em>msg</em>. Then, the rest is pretty much like what we just saw with movecursor. We use some more labels and a conditional jump, but at risk of being too verbose, understanding the code is left as an excercise to the reader ;).</p>
 <div class="codehilite"><pre><span></span>    <span class="nl">print:</span>
-        <span class="nf">push</span> <span class="no">ebp</span>
-        <span class="nf">mov</span> <span class="no">ebp</span><span class="p">,</span> <span class="no">esp</span>
+        <span class="nf">push</span> <span class="no">bp</span>
+        <span class="nf">mov</span> <span class="no">bp</span><span class="p">,</span> <span class="no">sp</span>
         <span class="nf">pusha</span>
-        <span class="nf">mov</span> <span class="no">si</span><span class="p">,</span> <span class="p">[</span><span class="no">ebp</span><span class="err">+</span><span class="mi">6</span><span class="p">]</span>     <span class="c"># grab the pointer to the data</span>
-        <span class="nf">mov</span> <span class="no">bh</span><span class="p">,</span> <span class="mi">00</span><span class="no">h</span>         <span class="c"># page number, 0 again</span>
-        <span class="nf">mov</span> <span class="no">bl</span><span class="p">,</span> <span class="mi">00</span><span class="no">h</span>         <span class="c"># foreground color, irrelevant - in text mode</span>
-        <span class="nf">mov</span> <span class="no">ah</span><span class="p">,</span> <span class="mi">0</span><span class="no">Eh</span>         <span class="c"># print character to TTY</span>
+        <span class="nf">mov</span> <span class="no">si</span><span class="p">,</span> <span class="p">[</span><span class="no">bp</span><span class="err">+</span><span class="mi">4</span><span class="p">]</span>      <span class="c"># grab the pointer to the data</span>
+        <span class="nf">mov</span> <span class="no">bh</span><span class="p">,</span> <span class="mi">0x00</span>        <span class="c"># page number, 0 again</span>
+        <span class="nf">mov</span> <span class="no">bl</span><span class="p">,</span> <span class="mi">0x00</span>        <span class="c"># foreground color, irrelevant - in text mode</span>
+        <span class="nf">mov</span> <span class="no">ah</span><span class="p">,</span> <span class="mi">0x0E</span>        <span class="c"># print character to TTY</span>
      <span class="nl">.char:</span>
          <span class="nf">mov</span> <span class="no">al</span><span class="p">,</span> <span class="p">[</span><span class="no">si</span><span class="p">]</span>       <span class="c"># get the current char from our pointer position</span>
          <span class="nf">add</span> <span class="no">si</span><span class="p">,</span> <span class="mi">1</span>          <span class="c"># keep incrementing si until we see a null char</span>
          <span class="nf">or</span> <span class="no">al</span><span class="p">,</span> <span class="mi">0</span>
          <span class="nf">je</span> <span class="no">.return</span>         <span class="c"># end if the string is done</span>
-         <span class="nf">int</span> <span class="mi">10</span><span class="no">h</span>            <span class="c"># print the character if we&#39;re not done</span>
+         <span class="nf">int</span> <span class="mi">0x10</span>           <span class="c"># print the character if we&#39;re not done</span>
          <span class="nf">jmp</span> <span class="no">.char</span>          <span class="c"># keep looping</span>
      <span class="nl">.return:</span>
          <span class="nf">popa</span>
-         <span class="nf">mov</span> <span class="no">esp</span><span class="p">,</span> <span class="no">ebp</span>
-         <span class="nf">pop</span> <span class="no">ebp</span>
+         <span class="nf">mov</span> <span class="no">sp</span><span class="p">,</span> <span class="no">bp</span>
+         <span class="nf">pop</span> <span class="no">bp</span>
          <span class="nf">ret</span>
 </pre></div>
 
@@ -184,77 +186,77 @@ It might be from being stuck at home with nothing to do over break, or it might 
 <p>And that'll just about do it folks. Plugging everything we have so far together, we get the following <em>real life</em> bootloader.</p>
 <div class="codehilite"><pre><span></span>    <span class="nf">bits</span> <span class="mi">16</span>
 
-    <span class="nf">mov</span> <span class="no">ax</span><span class="p">,</span> <span class="mi">07</span><span class="no">C0h</span>
+    <span class="nf">mov</span> <span class="no">ax</span><span class="p">,</span> <span class="mi">0x07C0</span>
     <span class="nf">mov</span> <span class="no">ds</span><span class="p">,</span> <span class="no">ax</span>
-    <span class="nf">mov</span> <span class="no">ax</span><span class="p">,</span> <span class="mi">07</span><span class="no">E0h</span>       <span class="c"># 07E0h = (07C00h+200h)/10h, beginning of stack segment.</span>
+    <span class="nf">mov</span> <span class="no">ax</span><span class="p">,</span> <span class="mi">0x07E0</span>      <span class="c"># 07E0h = (07C00h+200h)/10h, beginning of stack segment.</span>
     <span class="nf">mov</span> <span class="no">ss</span><span class="p">,</span> <span class="no">ax</span>
-    <span class="nf">mov</span> <span class="no">sp</span><span class="p">,</span> <span class="mi">2000</span><span class="no">h</span>       <span class="c"># 8k of stack space.</span>
+    <span class="nf">mov</span> <span class="no">sp</span><span class="p">,</span> <span class="mi">0x2000</span>      <span class="c"># 8k of stack space.</span>
 
     <span class="nf">call</span> <span class="no">clearscreen</span>
 
-    <span class="nf">push</span> <span class="mi">0000</span><span class="no">h</span>
+    <span class="nf">push</span> <span class="mi">0x0000</span>
     <span class="nf">call</span> <span class="no">movecursor</span>
-    <span class="nf">add</span> <span class="no">esp</span><span class="p">,</span> <span class="mi">2</span>
+    <span class="nf">add</span> <span class="no">sp</span><span class="p">,</span> <span class="mi">2</span>
 
     <span class="nf">push</span> <span class="no">msg</span>
     <span class="nf">call</span> <span class="no">print</span>
-    <span class="nf">add</span> <span class="no">esp</span><span class="p">,</span> <span class="mi">2</span>
+    <span class="nf">add</span> <span class="no">sp</span><span class="p">,</span> <span class="mi">2</span>
 
     <span class="nf">cli</span>
     <span class="nf">hlt</span>
 
     <span class="nl">clearscreen:</span>
-        <span class="nf">push</span> <span class="no">ebp</span>
-        <span class="nf">mov</span> <span class="no">ebp</span><span class="p">,</span> <span class="no">esp</span>
+        <span class="nf">push</span> <span class="no">bp</span>
+        <span class="nf">mov</span> <span class="no">bp</span><span class="p">,</span> <span class="no">sp</span>
         <span class="nf">pusha</span>
 
-        <span class="nf">mov</span> <span class="no">ah</span><span class="p">,</span> <span class="mi">07</span><span class="no">h</span>         <span class="c"># tells BIOS to scroll down window</span>
-        <span class="nf">mov</span> <span class="no">al</span><span class="p">,</span> <span class="mi">00</span><span class="no">h</span>         <span class="c"># clear entire window</span>
-        <span class="nf">mov</span> <span class="no">bh</span><span class="p">,</span> <span class="mi">07</span><span class="no">h</span>         <span class="c"># white on black</span>
-        <span class="nf">mov</span> <span class="no">cx</span><span class="p">,</span> <span class="mi">00</span><span class="no">h</span>         <span class="c"># specifies top left of screen as (0,0)</span>
-        <span class="nf">mov</span> <span class="no">dh</span><span class="p">,</span> <span class="mi">18</span><span class="no">h</span>         <span class="c"># 18h = 24 rows of chars</span>
-        <span class="nf">mov</span> <span class="no">dl</span><span class="p">,</span> <span class="mi">4</span><span class="no">fh</span>         <span class="c"># 4fh = 79 cols of chars</span>
-        <span class="nf">int</span> <span class="mi">10</span><span class="no">h</span>             <span class="c"># calls video interrupt</span>
+        <span class="nf">mov</span> <span class="no">ah</span><span class="p">,</span> <span class="mi">0x07</span>        <span class="c"># tells BIOS to scroll down window</span>
+        <span class="nf">mov</span> <span class="no">al</span><span class="p">,</span> <span class="mi">0x00</span>        <span class="c"># clear entire window</span>
+        <span class="nf">mov</span> <span class="no">bh</span><span class="p">,</span> <span class="mi">0x07</span>        <span class="c"># white on black</span>
+        <span class="nf">mov</span> <span class="no">cx</span><span class="p">,</span> <span class="mi">0x00</span>        <span class="c"># specifies top left of screen as (0,0)</span>
+        <span class="nf">mov</span> <span class="no">dh</span><span class="p">,</span> <span class="mi">0x18</span>        <span class="c"># 18h = 24 rows of chars</span>
+        <span class="nf">mov</span> <span class="no">dl</span><span class="p">,</span> <span class="mi">0x4f</span>        <span class="c"># 4fh = 79 cols of chars</span>
+        <span class="nf">int</span> <span class="mi">0x10</span>            <span class="c"># calls video interrupt</span>
 
         <span class="nf">popa</span>
-        <span class="nf">mov</span> <span class="no">esp</span><span class="p">,</span> <span class="no">ebp</span>
-        <span class="nf">pop</span> <span class="no">ebp</span>
+        <span class="nf">mov</span> <span class="no">sp</span><span class="p">,</span> <span class="no">bp</span>
+        <span class="nf">pop</span> <span class="no">bp</span>
         <span class="nf">ret</span>
 
     <span class="nl">movecursor:</span>
-        <span class="nf">push</span> <span class="no">ebp</span>
-        <span class="nf">mov</span> <span class="no">ebp</span><span class="p">,</span> <span class="no">esp</span>
+        <span class="nf">push</span> <span class="no">bp</span>
+        <span class="nf">mov</span> <span class="no">bp</span><span class="p">,</span> <span class="no">sp</span>
         <span class="nf">pusha</span>
 
-        <span class="nf">mov</span> <span class="no">dx</span><span class="p">,</span> <span class="p">[</span><span class="no">ebp</span><span class="err">+</span><span class="mi">6</span><span class="p">]</span>     <span class="c"># get the argument from the stack. |ebp| = 4, |arg| = 2</span>
-        <span class="nf">mov</span> <span class="no">ah</span><span class="p">,</span> <span class="mi">02</span><span class="no">h</span>         <span class="c"># set cursor position</span>
-        <span class="nf">mov</span> <span class="no">bh</span><span class="p">,</span> <span class="mi">00</span><span class="no">h</span>         <span class="c"># page 0 - doesn&#39;t matter, we&#39;re not using double-buffering</span>
-        <span class="nf">int</span> <span class="mi">10</span><span class="no">h</span>
+        <span class="nf">mov</span> <span class="no">dx</span><span class="p">,</span> <span class="p">[</span><span class="no">bp</span><span class="err">+</span><span class="mi">4</span><span class="p">]</span>  <span class="c"># get the argument from the stack. |bp| = 2, |arg| = 2</span>
+        <span class="nf">mov</span> <span class="no">ah</span><span class="p">,</span> <span class="mi">0x02</span>        <span class="c"># set cursor position</span>
+        <span class="nf">mov</span> <span class="no">bh</span><span class="p">,</span> <span class="mi">0x00</span>        <span class="c"># page 0 - doesn&#39;t matter, we&#39;re not using double-buffering</span>
+        <span class="nf">int</span> <span class="mi">0x10</span>
 
         <span class="nf">popa</span>
-        <span class="nf">mov</span> <span class="no">esp</span><span class="p">,</span> <span class="no">ebp</span>
-        <span class="nf">pop</span> <span class="no">ebp</span>
+        <span class="nf">mov</span> <span class="no">sp</span><span class="p">,</span> <span class="no">bp</span>
+        <span class="nf">pop</span> <span class="no">bp</span>
         <span class="nf">ret</span>
 
     <span class="nl">print:</span>
-        <span class="nf">push</span> <span class="no">ebp</span>
-        <span class="nf">mov</span> <span class="no">ebp</span><span class="p">,</span> <span class="no">esp</span>
+        <span class="nf">push</span> <span class="no">bp</span>
+        <span class="nf">mov</span> <span class="no">bp</span><span class="p">,</span> <span class="no">sp</span>
         <span class="nf">pusha</span>
-        <span class="nf">mov</span> <span class="no">si</span><span class="p">,</span> <span class="p">[</span><span class="no">ebp</span><span class="err">+</span><span class="mi">6</span><span class="p">]</span>     <span class="c"># grab the pointer to the data</span>
-        <span class="nf">mov</span> <span class="no">bh</span><span class="p">,</span> <span class="mi">00</span><span class="no">h</span>         <span class="c"># page number, 0 again</span>
-        <span class="nf">mov</span> <span class="no">bl</span><span class="p">,</span> <span class="mi">00</span><span class="no">h</span>         <span class="c"># foreground color, irrelevant - in text mode</span>
-        <span class="nf">mov</span> <span class="no">ah</span><span class="p">,</span> <span class="mi">0</span><span class="no">Eh</span>         <span class="c"># print character to TTY</span>
+        <span class="nf">mov</span> <span class="no">si</span><span class="p">,</span> <span class="p">[</span><span class="no">bp</span><span class="err">+</span><span class="mi">4</span><span class="p">]</span>      <span class="c"># grab the pointer to the data</span>
+        <span class="nf">mov</span> <span class="no">bh</span><span class="p">,</span> <span class="mi">0x00</span>        <span class="c"># page number, 0 again</span>
+        <span class="nf">mov</span> <span class="no">bl</span><span class="p">,</span> <span class="mi">0x00</span>        <span class="c"># foreground color, irrelevant - in text mode</span>
+        <span class="nf">mov</span> <span class="no">ah</span><span class="p">,</span> <span class="mi">0x0E</span>        <span class="c"># print character to TTY</span>
     <span class="nl">.char:</span>
         <span class="nf">mov</span> <span class="no">al</span><span class="p">,</span> <span class="p">[</span><span class="no">si</span><span class="p">]</span>        <span class="c"># get the current char from our pointer position</span>
         <span class="nf">add</span> <span class="no">si</span><span class="p">,</span> <span class="mi">1</span>           <span class="c"># keep incrementing si until we see a null char</span>
         <span class="nf">or</span> <span class="no">al</span><span class="p">,</span> <span class="mi">0</span>
         <span class="nf">je</span> <span class="no">.return</span>          <span class="c"># end if the string is done</span>
-        <span class="nf">int</span> <span class="mi">10</span><span class="no">h</span>             <span class="c"># print the character if we&#39;re not done</span>
+        <span class="nf">int</span> <span class="mi">0x10</span>            <span class="c"># print the character if we&#39;re not done</span>
         <span class="nf">jmp</span> <span class="no">.char</span>           <span class="c"># keep looping</span>
     <span class="nl">.return:</span>
         <span class="nf">popa</span>
-        <span class="nf">mov</span> <span class="no">esp</span><span class="p">,</span> <span class="no">ebp</span>
-        <span class="nf">pop</span> <span class="no">ebp</span>
+        <span class="nf">mov</span> <span class="no">sp</span><span class="p">,</span> <span class="no">bp</span>
+        <span class="nf">pop</span> <span class="no">bp</span>
         <span class="nf">ret</span>
 
 

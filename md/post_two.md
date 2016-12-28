@@ -8,6 +8,10 @@ PostNum:     2
 <br></br>
 <i>All the code/files from this post are available on my [Github](https://github.com/Jophish/tiny-bootstrap).</i>
 <br></br>
+
+<i> Edit: After some discussion by the [good people on Hacker News](https://news.ycombinator.com/item?id=13268781), it's become clear that when in 16-bit real mode, it's best to use 2-byte registers bp, sp, instead of the 4-byte esb, esp. The article and code have been updated to reflect this.</i>
+
+<br></br>
 It might be from being stuck at home with nothing to do over break, or it might be from an *actual interest* in low-level systems design, but I've taken it upon myself to learn more about OS implementation, starting with the bootloader. So, here we go. All of this information exists in various other places on the web, but there's no better way to learn than by teaching, right? Either way, this piece should serve as primer on what exactly a bootloader does and how to implement a relatively simple one (compared to a beast like [GRUB](https://en.wikipedia.org/wiki/GNU_GRUB) which is ostensibly its own little operating system).
 
 ## What is a bootloader?
@@ -56,8 +60,8 @@ If you look at the spec, you'll see that we need to set AH to 0x07, and AL to 0x
 
 	:::asm
 	clearscreen:
-		push ebp
-		mov ebp, esp
+		push bp
+		mov bp, sp
 		pusha
 
 		mov ah, 0x07		# tells BIOS to scroll down window
@@ -69,8 +73,8 @@ If you look at the spec, you'll see that we need to set AH to 0x07, and AL to 0x
 		int 0x10		    # calls video interrupt
 
 	    popa
-	    mov esp, ebp
-	    pop ebp
+	    mov sp, bp
+	    pop bp
 	    ret
 
 The overhead at the beginning and end of the subroutine allows us to adhere to the standard calling convention between caller and callee. <tt>pusha</tt> and <tt>popa</tt> push and pop all general registers on and off the stack. We save the caller's base pointer (4 bytes), and update the base pointer with the new stack pointer. At the very end, we essentially mirror this process.
@@ -81,21 +85,21 @@ Putting it all together, we have the following subroutine.
 
 	:::asm
 	movecursor:
-		push ebp
-		mov ebp, esp
+		push bp
+		mov bp, sp
 		pusha
 
-	    mov dx, [ebp+6] 	# get the argument from the stack. |ebp| = 4, |arg| = 2
-	    mov ah, 02h 		# set cursor position
-	    mov bh, 00h		    # page 0 - doesn't matter, we're not using double-buffering
-	    int 10h
+	    mov dx, [bp+4] 	    # get the argument from the stack. |bp| = 2, |arg| = 2
+	    mov ah, 0x02 		# set cursor position
+	    mov bh, 0x00	    # page 0 - doesn't matter, we're not using double-buffering
+	    int 0x10
 
 	    popa
-	    mov esp, ebp
-	    pop ebp
+	    mov sp, bp
+	    pop bp
 	    ret
 
-The only thing that might look unusual is the **mov dx, [ebp+6]**. This moves the argument we passed into the DX register. The reason we offset by 6 is that the contents of ebp takes up 4 bytes on the stack, and the argument takes up two bytes, so we have to offset a total of 6 bytes from the actual address of ebp. Note also that the caller has the responsibility to clean the stack after the callee returns, which amounts to removing the arguments from the top of the stack by moving the stack pointer.
+The only thing that might look unusual is the **mov dx, [bp+4]**. This moves the argument we passed into the DX register. The reason we offset by 4 is that the contents of bp takes up 2 bytes on the stack, and the argument takes up two bytes, so we have to offset a total of 4 bytes from the actual address of bp. Note also that the caller has the responsibility to clean the stack after the callee returns, which amounts to removing the arguments from the top of the stack by moving the stack pointer.
 
 The final subroutine we want to write is simply one that, given a pointer to the beginning of a string, prints that string to the screen beginning at the current cursor position. Using the video interrupt code with [AH=0Eh](http://www.ctyme.com/intr/rb-0106.htm) works nicely. First off, we can define some data and store a pointer to its starting address with something that looks like this.
 
@@ -106,24 +110,24 @@ The 0 at the end terminates the string with a null character, so we'll know when
 
 	:::asm
 		print:
-			push ebp
-			mov ebp, esp
+			push bp
+			mov bp, sp
 			pusha
-			mov si, [ebp+6]	 	# grab the pointer to the data
-			mov bh, 00h	        # page number, 0 again
-			mov bl, 00h		    # foreground color, irrelevant - in text mode
-			mov ah, 0Eh  		# print character to TTY
+			mov si, [bp+4]	 	# grab the pointer to the data
+			mov bh, 0x00	    # page number, 0 again
+			mov bl, 0x00		# foreground color, irrelevant - in text mode
+			mov ah, 0x0E  		# print character to TTY
 		 .char:
 			 mov al, [si]      	# get the current char from our pointer position
 			 add si, 1		    # keep incrementing si until we see a null char
 			 or al, 0
 			 je .return        	# end if the string is done
-			 int 10h         	# print the character if we're not done
+			 int 0x10         	# print the character if we're not done
 			 jmp .char	  	    # keep looping
 		 .return:
 			 popa
-			 mov esp, ebp
-			 pop ebp
+			 mov sp, bp
+			 pop bp
 			 ret
 
 And that'll just about do it folks. Plugging everything we have so far together, we get the following *real life* bootloader.
@@ -131,77 +135,77 @@ And that'll just about do it folks. Plugging everything we have so far together,
 	:::asm
 		bits 16
 
-	    mov ax, 07C0h
+	    mov ax, 0x07C0
 	    mov ds, ax
-	    mov ax, 07E0h		# 07E0h = (07C00h+200h)/10h, beginning of stack segment.
+	    mov ax, 0x07E0		# 07E0h = (07C00h+200h)/10h, beginning of stack segment.
 	    mov ss, ax
-	    mov sp, 2000h		# 8k of stack space.
+	    mov sp, 0x2000		# 8k of stack space.
 
 	    call clearscreen
 
-	    push 0000h
+	    push 0x0000
 	    call movecursor
-	    add esp, 2
+	    add sp, 2
 
 	    push msg
 	    call print
-	    add esp, 2
+	    add sp, 2
 
 	    cli
 	    hlt
 
 	    clearscreen:
-			push ebp
-			mov ebp, esp
+			push bp
+			mov bp, sp
 			pusha
 
-	        mov ah, 07h		    # tells BIOS to scroll down window
-	        mov al, 00h		    # clear entire window
-    	    mov bh, 07h    		# white on black
-	        mov cx, 00h  		# specifies top left of screen as (0,0)
-	        mov dh, 18h		    # 18h = 24 rows of chars
-	        mov dl, 4fh		    # 4fh = 79 cols of chars
-	        int 10h		        # calls video interrupt
+	        mov ah, 0x07		# tells BIOS to scroll down window
+	        mov al, 0x00		# clear entire window
+    	    mov bh, 0x07    	# white on black
+	        mov cx, 0x00  		# specifies top left of screen as (0,0)
+	        mov dh, 0x18		# 18h = 24 rows of chars
+	        mov dl, 0x4f		# 4fh = 79 cols of chars
+	        int 0x10		    # calls video interrupt
 
 	        popa
-	        mov esp, ebp
-	        pop ebp
+	        mov sp, bp
+	        pop bp
 	        ret
 
 	    movecursor:
-			push ebp
-			mov ebp, esp
+			push bp
+			mov bp, sp
 			pusha
 
-	        mov dx, [ebp+6] 	# get the argument from the stack. |ebp| = 4, |arg| = 2
-	        mov ah, 02h 		# set cursor position
-	        mov bh, 00h		    # page 0 - doesn't matter, we're not using double-buffering
-	        int 10h
+	        mov dx, [bp+4] 	# get the argument from the stack. |bp| = 2, |arg| = 2
+	        mov ah, 0x02 		# set cursor position
+	        mov bh, 0x00		# page 0 - doesn't matter, we're not using double-buffering
+	        int 0x10
 
 	        popa
-	        mov esp, ebp
-	        pop ebp
+	        mov sp, bp
+	        pop bp
 	        ret
 
 	    print:
-			push ebp
-			mov ebp, esp
+			push bp
+			mov bp, sp
 			pusha
-		    mov si, [ebp+6]	 	# grab the pointer to the data
-		    mov bh, 00h	        # page number, 0 again
-		    mov bl, 00h		    # foreground color, irrelevant - in text mode
-		    mov ah, 0Eh  		# print character to TTY
+		    mov si, [bp+4]	 	# grab the pointer to the data
+		    mov bh, 0x00	    # page number, 0 again
+		    mov bl, 0x00		# foreground color, irrelevant - in text mode
+		    mov ah, 0x0E  		# print character to TTY
 		.char:
 			mov al, [si]   		# get the current char from our pointer position
 			add si, 1		    # keep incrementing si until we see a null char
 			or al, 0
 			je .return        	# end if the string is done
-			int 10h         	# print the character if we're not done
+			int 0x10         	# print the character if we're not done
 			jmp .char	  	    # keep looping
         .return:
 			popa
-			mov esp, ebp
-			pop ebp
+			mov sp, bp
+			pop bp
 			ret
 
 
