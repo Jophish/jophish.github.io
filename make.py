@@ -132,7 +132,7 @@ for file in files:
             pre = '<div class=\"text-post\">'
             suf = '<\\div>'
             temp = []
-            temp.append(pre+md.convert(html)+suf)
+            temp.append(pre+md.convert(html))
 
             temp.append(md.Meta)
             temp.append(file)
