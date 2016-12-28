@@ -8,7 +8,6 @@ import markdown
 import os
 import random
 from colour import Color
-
 # encoding=utf8  
 import sys  
 
@@ -24,7 +23,6 @@ files = os.listdir('./md') #list of md files to convert to html
 postList = []
 
 md = markdown.Markdown(extensions=['meta','markdown.extensions.fenced_code','markdown.extensions.codehilite',])
-
 #get project dirs here
 
 projDirs = [x[0] for x in os.listdir("./projects-source")]
@@ -126,6 +124,7 @@ for dir in projDirs:
 
     
 for file in files:
+    
     with open('md/'+file, 'r') as myfile:
 
         if file[len(file)-2:len(file)] == "md":

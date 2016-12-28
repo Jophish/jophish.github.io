@@ -36,3 +36,41 @@ max-height: 70px;
 }
 
 
+
+
+#custom-post-2 {
+max-height: 70px;
+    margin: 2vh;
+    padding: 0vh;
+    border: 0vh
+    border-color: #d1a694;
+    line-height: 70px;
+    max-line-height: 70px;
+    background: #d1a694;
+
+}
+#custom-post-2:hover {
+	#text-decoration: none;
+  	color: #fff;
+	background: #faba9e;
+	border-color: #faba9e !important;
+
+}
+
+#custom-post-2 div:hover {
+	#text-decoration: none;
+  	color: #fff;
+	background: #faba9e;
+	border-color: #faba9e;
+
+}
+
+#custom-post-2 div a:hover {
+	#text-decoration: none;
+  	color: #fff;
+	background: #faba9e;
+	border-color: #faba9e;
+
+}
+
+
