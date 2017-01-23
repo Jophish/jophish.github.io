@@ -119,12 +119,12 @@ It might be from being stuck at home with nothing to do over break, or it might 
     <span class="nf">pusha</span>
 
     <span class="nf">mov</span> <span class="no">ah</span><span class="p">,</span> <span class="mi">0x07</span>        <span class="c"># tells BIOS to scroll down window</span>
-    <span class="nf">mov</span> <span class="no">al</span><span class="p">,</span> <span class="mi">0x00</span>        <span class="c"># clear entire window</span>
-    <span class="nf">mov</span> <span class="no">bh</span><span class="p">,</span> <span class="mi">0x07</span>        <span class="c"># white on black</span>
-    <span class="nf">mov</span> <span class="no">cx</span><span class="p">,</span> <span class="mi">0x00</span>        <span class="c"># specifies top left of screen as (0,0)</span>
-    <span class="nf">mov</span> <span class="no">dh</span><span class="p">,</span> <span class="mi">0x18</span>        <span class="c"># 18h = 24 rows of chars</span>
-    <span class="nf">mov</span> <span class="no">dl</span><span class="p">,</span> <span class="mi">0x4f</span>        <span class="c"># 4fh = 79 cols of chars</span>
-    <span class="nf">int</span> <span class="mi">0x10</span>            <span class="c"># calls video interrupt</span>
+    <span class="no">mov</span> <span class="no">al</span><span class="p">,</span> <span class="mi">0x00</span>        <span class="c"># clear entire window</span>
+    <span class="no">mov</span> <span class="no">bh</span><span class="p">,</span> <span class="mi">0x07</span>        <span class="c"># white on black</span>
+    <span class="no">mov</span> <span class="no">cx</span><span class="p">,</span> <span class="mi">0x00</span>        <span class="c"># specifies top left of screen as (0,0)</span>
+    <span class="no">mov</span> <span class="no">dh</span><span class="p">,</span> <span class="mi">0x18</span>        <span class="c"># 18h = 24 rows of chars</span>
+    <span class="no">mov</span> <span class="no">dl</span><span class="p">,</span> <span class="mi">0x4f</span>        <span class="c"># 4fh = 79 cols of chars</span>
+    <span class="no">int</span> <span class="mi">0x10</span>            <span class="c"># calls video interrupt</span>
 
     <span class="nf">popa</span>
     <span class="nf">mov</span> <span class="no">sp</span><span class="p">,</span> <span class="no">bp</span>
@@ -142,9 +142,9 @@ It might be from being stuck at home with nothing to do over break, or it might 
     <span class="nf">pusha</span>
 
     <span class="nf">mov</span> <span class="no">dx</span><span class="p">,</span> <span class="p">[</span><span class="no">bp</span><span class="err">+</span><span class="mi">4</span><span class="p">]</span>      <span class="c"># get the argument from the stack. |bp| = 2, |arg| = 2</span>
-    <span class="nf">mov</span> <span class="no">ah</span><span class="p">,</span> <span class="mi">0x02</span>        <span class="c"># set cursor position</span>
-    <span class="nf">mov</span> <span class="no">bh</span><span class="p">,</span> <span class="mi">0x00</span>        <span class="c"># page 0 - doesn&#39;t matter, we&#39;re not using double-buffering</span>
-    <span class="nf">int</span> <span class="mi">0x10</span>
+    <span class="no">mov</span> <span class="no">ah</span><span class="p">,</span> <span class="mi">0x02</span>        <span class="c"># set cursor position</span>
+    <span class="no">mov</span> <span class="no">bh</span><span class="p">,</span> <span class="mi">0x00</span>        <span class="c"># page 0 - doesn&#39;t matter, we&#39;re not using double-buffering</span>
+    <span class="no">int</span> <span class="mi">0x10</span>
 
     <span class="nf">popa</span>
     <span class="nf">mov</span> <span class="no">sp</span><span class="p">,</span> <span class="no">bp</span>
@@ -165,17 +165,17 @@ It might be from being stuck at home with nothing to do over break, or it might 
         <span class="nf">mov</span> <span class="no">bp</span><span class="p">,</span> <span class="no">sp</span>
         <span class="nf">pusha</span>
         <span class="nf">mov</span> <span class="no">si</span><span class="p">,</span> <span class="p">[</span><span class="no">bp</span><span class="err">+</span><span class="mi">4</span><span class="p">]</span>      <span class="c"># grab the pointer to the data</span>
-        <span class="nf">mov</span> <span class="no">bh</span><span class="p">,</span> <span class="mi">0x00</span>        <span class="c"># page number, 0 again</span>
-        <span class="nf">mov</span> <span class="no">bl</span><span class="p">,</span> <span class="mi">0x00</span>        <span class="c"># foreground color, irrelevant - in text mode</span>
-        <span class="nf">mov</span> <span class="no">ah</span><span class="p">,</span> <span class="mi">0x0E</span>        <span class="c"># print character to TTY</span>
-     <span class="nl">.char:</span>
+        <span class="no">mov</span> <span class="no">bh</span><span class="p">,</span> <span class="mi">0x00</span>        <span class="c"># page number, 0 again</span>
+        <span class="no">mov</span> <span class="no">bl</span><span class="p">,</span> <span class="mi">0x00</span>        <span class="c"># foreground color, irrelevant - in text mode</span>
+        <span class="no">mov</span> <span class="no">ah</span><span class="p">,</span> <span class="mi">0x0E</span>        <span class="c"># print character to TTY</span>
+     <span class="no">.char</span><span class="p">:</span>
          <span class="nf">mov</span> <span class="no">al</span><span class="p">,</span> <span class="p">[</span><span class="no">si</span><span class="p">]</span>       <span class="c"># get the current char from our pointer position</span>
-         <span class="nf">add</span> <span class="no">si</span><span class="p">,</span> <span class="mi">1</span>          <span class="c"># keep incrementing si until we see a null char</span>
-         <span class="nf">or</span> <span class="no">al</span><span class="p">,</span> <span class="mi">0</span>
+         <span class="no">add</span> <span class="no">si</span><span class="p">,</span> <span class="mi">1</span>          <span class="c"># keep incrementing si until we see a null char</span>
+         <span class="no">or</span> <span class="no">al</span><span class="p">,</span> <span class="mi">0</span>
          <span class="nf">je</span> <span class="no">.return</span>         <span class="c"># end if the string is done</span>
-         <span class="nf">int</span> <span class="mi">0x10</span>           <span class="c"># print the character if we&#39;re not done</span>
-         <span class="nf">jmp</span> <span class="no">.char</span>          <span class="c"># keep looping</span>
-     <span class="nl">.return:</span>
+         <span class="no">int</span> <span class="mi">0x10</span>           <span class="c"># print the character if we&#39;re not done</span>
+         <span class="no">jmp</span> <span class="no">.char</span>          <span class="c"># keep looping</span>
+     <span class="no">.return</span><span class="p">:</span>
          <span class="nf">popa</span>
          <span class="nf">mov</span> <span class="no">sp</span><span class="p">,</span> <span class="no">bp</span>
          <span class="nf">pop</span> <span class="no">bp</span>
@@ -189,7 +189,7 @@ It might be from being stuck at home with nothing to do over break, or it might 
     <span class="nf">mov</span> <span class="no">ax</span><span class="p">,</span> <span class="mi">0x07C0</span>
     <span class="nf">mov</span> <span class="no">ds</span><span class="p">,</span> <span class="no">ax</span>
     <span class="nf">mov</span> <span class="no">ax</span><span class="p">,</span> <span class="mi">0x07E0</span>      <span class="c"># 07E0h = (07C00h+200h)/10h, beginning of stack segment.</span>
-    <span class="nf">mov</span> <span class="no">ss</span><span class="p">,</span> <span class="no">ax</span>
+    <span class="no">mov</span> <span class="no">ss</span><span class="p">,</span> <span class="no">ax</span>
     <span class="nf">mov</span> <span class="no">sp</span><span class="p">,</span> <span class="mi">0x2000</span>      <span class="c"># 8k of stack space.</span>
 
     <span class="nf">call</span> <span class="no">clearscreen</span>
@@ -211,12 +211,12 @@ It might be from being stuck at home with nothing to do over break, or it might 
         <span class="nf">pusha</span>
 
         <span class="nf">mov</span> <span class="no">ah</span><span class="p">,</span> <span class="mi">0x07</span>        <span class="c"># tells BIOS to scroll down window</span>
-        <span class="nf">mov</span> <span class="no">al</span><span class="p">,</span> <span class="mi">0x00</span>        <span class="c"># clear entire window</span>
-        <span class="nf">mov</span> <span class="no">bh</span><span class="p">,</span> <span class="mi">0x07</span>        <span class="c"># white on black</span>
-        <span class="nf">mov</span> <span class="no">cx</span><span class="p">,</span> <span class="mi">0x00</span>        <span class="c"># specifies top left of screen as (0,0)</span>
-        <span class="nf">mov</span> <span class="no">dh</span><span class="p">,</span> <span class="mi">0x18</span>        <span class="c"># 18h = 24 rows of chars</span>
-        <span class="nf">mov</span> <span class="no">dl</span><span class="p">,</span> <span class="mi">0x4f</span>        <span class="c"># 4fh = 79 cols of chars</span>
-        <span class="nf">int</span> <span class="mi">0x10</span>            <span class="c"># calls video interrupt</span>
+        <span class="no">mov</span> <span class="no">al</span><span class="p">,</span> <span class="mi">0x00</span>        <span class="c"># clear entire window</span>
+        <span class="no">mov</span> <span class="no">bh</span><span class="p">,</span> <span class="mi">0x07</span>        <span class="c"># white on black</span>
+        <span class="no">mov</span> <span class="no">cx</span><span class="p">,</span> <span class="mi">0x00</span>        <span class="c"># specifies top left of screen as (0,0)</span>
+        <span class="no">mov</span> <span class="no">dh</span><span class="p">,</span> <span class="mi">0x18</span>        <span class="c"># 18h = 24 rows of chars</span>
+        <span class="no">mov</span> <span class="no">dl</span><span class="p">,</span> <span class="mi">0x4f</span>        <span class="c"># 4fh = 79 cols of chars</span>
+        <span class="no">int</span> <span class="mi">0x10</span>            <span class="c"># calls video interrupt</span>
 
         <span class="nf">popa</span>
         <span class="nf">mov</span> <span class="no">sp</span><span class="p">,</span> <span class="no">bp</span>
@@ -229,9 +229,9 @@ It might be from being stuck at home with nothing to do over break, or it might 
         <span class="nf">pusha</span>
 
         <span class="nf">mov</span> <span class="no">dx</span><span class="p">,</span> <span class="p">[</span><span class="no">bp</span><span class="err">+</span><span class="mi">4</span><span class="p">]</span>  <span class="c"># get the argument from the stack. |bp| = 2, |arg| = 2</span>
-        <span class="nf">mov</span> <span class="no">ah</span><span class="p">,</span> <span class="mi">0x02</span>        <span class="c"># set cursor position</span>
-        <span class="nf">mov</span> <span class="no">bh</span><span class="p">,</span> <span class="mi">0x00</span>        <span class="c"># page 0 - doesn&#39;t matter, we&#39;re not using double-buffering</span>
-        <span class="nf">int</span> <span class="mi">0x10</span>
+        <span class="no">mov</span> <span class="no">ah</span><span class="p">,</span> <span class="mi">0x02</span>        <span class="c"># set cursor position</span>
+        <span class="no">mov</span> <span class="no">bh</span><span class="p">,</span> <span class="mi">0x00</span>        <span class="c"># page 0 - doesn&#39;t matter, we&#39;re not using double-buffering</span>
+        <span class="no">int</span> <span class="mi">0x10</span>
 
         <span class="nf">popa</span>
         <span class="nf">mov</span> <span class="no">sp</span><span class="p">,</span> <span class="no">bp</span>
@@ -243,17 +243,17 @@ It might be from being stuck at home with nothing to do over break, or it might 
         <span class="nf">mov</span> <span class="no">bp</span><span class="p">,</span> <span class="no">sp</span>
         <span class="nf">pusha</span>
         <span class="nf">mov</span> <span class="no">si</span><span class="p">,</span> <span class="p">[</span><span class="no">bp</span><span class="err">+</span><span class="mi">4</span><span class="p">]</span>      <span class="c"># grab the pointer to the data</span>
-        <span class="nf">mov</span> <span class="no">bh</span><span class="p">,</span> <span class="mi">0x00</span>        <span class="c"># page number, 0 again</span>
-        <span class="nf">mov</span> <span class="no">bl</span><span class="p">,</span> <span class="mi">0x00</span>        <span class="c"># foreground color, irrelevant - in text mode</span>
-        <span class="nf">mov</span> <span class="no">ah</span><span class="p">,</span> <span class="mi">0x0E</span>        <span class="c"># print character to TTY</span>
-    <span class="nl">.char:</span>
+        <span class="no">mov</span> <span class="no">bh</span><span class="p">,</span> <span class="mi">0x00</span>        <span class="c"># page number, 0 again</span>
+        <span class="no">mov</span> <span class="no">bl</span><span class="p">,</span> <span class="mi">0x00</span>        <span class="c"># foreground color, irrelevant - in text mode</span>
+        <span class="no">mov</span> <span class="no">ah</span><span class="p">,</span> <span class="mi">0x0E</span>        <span class="c"># print character to TTY</span>
+    <span class="no">.char</span><span class="p">:</span>
         <span class="nf">mov</span> <span class="no">al</span><span class="p">,</span> <span class="p">[</span><span class="no">si</span><span class="p">]</span>        <span class="c"># get the current char from our pointer position</span>
-        <span class="nf">add</span> <span class="no">si</span><span class="p">,</span> <span class="mi">1</span>           <span class="c"># keep incrementing si until we see a null char</span>
-        <span class="nf">or</span> <span class="no">al</span><span class="p">,</span> <span class="mi">0</span>
+        <span class="no">add</span> <span class="no">si</span><span class="p">,</span> <span class="mi">1</span>           <span class="c"># keep incrementing si until we see a null char</span>
+        <span class="no">or</span> <span class="no">al</span><span class="p">,</span> <span class="mi">0</span>
         <span class="nf">je</span> <span class="no">.return</span>          <span class="c"># end if the string is done</span>
-        <span class="nf">int</span> <span class="mi">0x10</span>            <span class="c"># print the character if we&#39;re not done</span>
-        <span class="nf">jmp</span> <span class="no">.char</span>           <span class="c"># keep looping</span>
-    <span class="nl">.return:</span>
+        <span class="no">int</span> <span class="mi">0x10</span>            <span class="c"># print the character if we&#39;re not done</span>
+        <span class="no">jmp</span> <span class="no">.char</span>           <span class="c"># keep looping</span>
+    <span class="no">.return</span><span class="p">:</span>
         <span class="nf">popa</span>
         <span class="nf">mov</span> <span class="no">sp</span><span class="p">,</span> <span class="no">bp</span>
         <span class="nf">pop</span> <span class="no">bp</span>
@@ -277,13 +277,13 @@ It might be from being stuck at home with nothing to do over break, or it might 
 
 
 <p>Then, in the same directory, whip up a file called <em>bochsrc.txt</em>, and fill it up with the following</p>
-<div class="codehilite"><pre><span></span>megs: 32
+<div class="codehilite"><pre><span></span>megs: <span class="m">32</span>
 romimage: <span class="nv">file</span><span class="o">=</span>/usr/share/bochs/BIOS-bochs-latest, <span class="nv">address</span><span class="o">=</span>0xfffe0000
 vgaromimage: <span class="nv">file</span><span class="o">=</span>/usr/share/bochs/VGABIOS-lgpl-latest
 floppya: <span class="nv">1_44</span><span class="o">=</span>boot.com, <span class="nv">status</span><span class="o">=</span>inserted
 boot: a
 log: bochsout.txt
-mouse: <span class="nv">enabled</span><span class="o">=</span>0
+mouse: <span class="nv">enabled</span><span class="o">=</span><span class="m">0</span>
 display_library: x, <span class="nv">options</span><span class="o">=</span><span class="s2">&quot;gui_debug&quot;</span>
 </pre></div>
 
@@ -296,7 +296,7 @@ display_library: x, <span class="nv">options</span><span class="o">=</span><span
 <p>to run Bochs using the config file you just wrote, and <em>voila</em>, you should see something along the lines of this.</p>
 <p><img src="../assets/images/bochs.png" class="postImage"></img></p>
 <p>Wow. Pretty boring, huh? If you have a USB drive laying around anywhere, you can do something marginally cooler. Plug that puppy in and find out where it lives (use dmesg or something). Mine was on <em>/dev/sdb</em>. Using <em>dd</em>, run</p>
-<div class="codehilite"><pre><span></span>sudo dd <span class="k">if</span><span class="o">=</span>boot.com <span class="nv">of</span><span class="o">=</span>/dev/sdb <span class="nv">bs</span><span class="o">=</span><span class="m">512</span> <span class="nv">count</span><span class="o">=</span>1
+<div class="codehilite"><pre><span></span>sudo dd <span class="k">if</span><span class="o">=</span>boot.com <span class="nv">of</span><span class="o">=</span>/dev/sdb <span class="nv">bs</span><span class="o">=</span><span class="m">512</span> <span class="nv">count</span><span class="o">=</span><span class="m">1</span>
 </pre></div>
 
 
