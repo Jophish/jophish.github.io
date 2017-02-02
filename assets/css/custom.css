@@ -130,7 +130,7 @@ html{
     font-weight: 400;
     font-size: 120%;
 
-    text-align: center;
+    text-align: left;
 
 
 }
@@ -202,6 +202,7 @@ html{
 .textPost{
     height: auto;
     font-size: 1.2em !important;
+    text-align: left;
 }
 
 .aboutPage{
