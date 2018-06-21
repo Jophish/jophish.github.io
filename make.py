@@ -23,7 +23,7 @@ files = os.listdir('./md') #list of md files to convert to html
 #each entry is a tuple, first elem is html, second is dict of metadata, last is filename
 postList = []
 # 'markdown.extensions.latex'
-md = markdown.Markdown(extensions=['meta','markdown.extensions.fenced_code','markdown.extensions.codehilite',])
+md = markdown.Markdown(extensions=['meta','markdown.extensions.fenced_code','markdown.extensions.codehilite','markdown.extensions.latex' ])
 #get project dirs here
 
 projDirs = [x[0] for x in os.listdir("./projects-source")]

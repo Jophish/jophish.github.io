@@ -1,0 +1,344 @@
+<!doctype HTML>
+<html lang="en" style="height: 100%">
+  
+  <head class="bg">
+    <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+    <meta content="utf-8" http-equiv="encoding">
+
+    <link rel="shortcut icon" href="../assets/images/favicon.ico" type="image/x-icon"/ >
+    <link rel="me" href="https://github.com/jophish" />
+    <link rel="me" href="https://soundcloud.com/morningsounds" />
+    <link rel="me" href="https://mornings.bandcamp.com/" />
+    <title> LRU Queues for Allocating MIDI Note On Events to Synthesizer Channels - Joe Bergeron </title>
+
+
+    
+    <link rel="stylesheet" href="../assets/css/bootstrap.css" type="text/css" />
+    <link rel="stylesheet" href="../assets/css/custom.css" type="text/css" />
+    <link rel="stylesheet" href="../assets/css/custom_colors.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../assets/css/codehilite.css">
+    
+    <script type="text/javascript" src="../assets/js/jquery.js"></script>
+    <script type="text/javascript" src="../assets/js/bootstrap.js"></script>
+    <script type="text/javascript" src="../assets/js/custom.js"></script>
+    <script type="text/javascript" src="../assets/js/analytics.js"></script>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,200,300,200italic,300italic,400italic' rel='stylesheet' type='text/css'>
+    
+    <link href="../assets/css/simple-sidebar.css" rel="stylesheet">
+
+    
+    
+
+    
+  </head>
+  
+  <body class="bg" style="height: 100%">
+    <!-- sidebar here-->
+    <div class="container-fluid bg" style="width=10%; height: 100%">
+      <div class="row bg" style="height: auto" id="mainRow">
+
+	  <div class="col-sm-1 sidebar" style="width=10%; max-width: 100px" id="sidebar">
+
+	    <ul class="sidebar-nav">
+              <li class="sidebar-button">
+		<a href="../about.html">a b o u t</a>
+              </li>
+              <li class="sidebar-button">
+		<a href="../index.html">p o s t s</a>
+              </li>
+              <li class="sidebar-button">
+		<a href="../projects.html">p r o j e c t s</a>
+              </li>
+	    </ul>
+	  </div>
+
+	<div class="col-sm-11 bg stuff" style="height: auto" id="stuff">
+	  <div class="container-fluid" style="width: 100%; height: 100%">
+	    <div id="header-stuff">
+	      <div class="row bg">
+		<div class="col-sm-3 bg"></div>
+		<h1 id="title" class="text-center col-sm-6 bg" style=""><a href="../index.html">j a b</a></h1>
+		<div class="col-sm-3 bg"></div>
+	      </div>
+
+	      <div class="row bg">
+		<div class="col-sm-2 bg"></div>
+	      
+		<h3 class="text-center col-sm-8 bg" style="padding: 0px; line-height: 5px"><hr id="vert-bar""></hr></h3>
+		<div class="col-sm-2 bg"></div>
+	      </div>
+	    </div>
+	    <div class="col-sm-2 bg"></div>
+	    <div class="text-center col-sm-8 bg" style="height: 100%; padding: 0px;">
+	      <div id ="main-body"class="container-fluid textPost" style="height: 100%; font-family: 'Source Sans Pro';">
+		<div class="text-post"><style scoped>img.latex-inline { vertical-align: middle; }</style>
+<h1>LRU Queues for Allocating MIDI Note On Events to Synthesizer Channels</h1>
+<p><br></br></p>
+<p>A few weeks ago, I graduated (hooray) from the school I've been attending for the past four years of my life. I start working full time in August, but until then, I have two months of complete, unsupervised freedom. In an effort to not go absolutley insane, I've tried to occupy my time with various projects. The largest of these projects is a pretty involved and "feature-rich" synthesizer based off the oldschool <a href="https://en.wikipedia.org/wiki/Yamaha_YM2612">YM2612</a> chip -- a 6 channel, 4 operator FM synth IC produced by Yamaha and used in a number of consumer products like the <a href="https://en.wikipedia.org/wiki/Sega_Genesis">Sega Mega Drive</a>.</p>
+<p>Among the list of synth features I want is MIDI control. <a href="https://en.wikipedia.org/wiki/MIDI">MIDI</a> is general protocol for the communication of musical information between electronic musical instruments, music sequencing software, or whatever else you want. MIDI data is transmitted serially as a sequence of byte values, which represent either <strong>command</strong> or <strong>data</strong> bytes. Each command byte is followed by some number of data bytes, and together, they make up a MIDI message. Most MIDI messages specify <em>real-time</em> events. That is to say, most MIDI messages are expected to be interpreted by the receiving device the instant they are received. In this way, MIDI can be used to control a synthesizer or other device in real time, by sending Note On or Note Off messages from a MIDI enabled keyboard, or more interestingly, a program which allows you to sequence MIDI data.</p>
+<p>For example, when you press a key on a MIDI-enabled keyboard, the keyboard sends a MIDI "Note On" message out of its MIDI port, which contains both the note to play, and the velocity, or volume, at which to play the note, both of which are represented by a byte a piece. As soon as the MIDI-compliant receiving device reads in this data, it's expected to interpret it immediately; this almost always means playing the note at the desired velocity. Likewise, when a note is released on a MIDI keyboard, the keyboard sends a MIDI "Note Off" message, which the recieving device responds to by, well, turning the desired note off. All of these MIDI parsing semantics must be implemented by the designer of the receiving device -- in my case, a synth.</p>
+<p>The YM2612 that I'm centering my synthesizer around contains 6 channels. Each channel can play a single note at once. This means that when my synthesizer receives a MIDI Note On message, it must allocate a channel to play the requested note. If the synthesizer recieves a Note On message while all the channels have notes playing, there must be some sort of rule to decide what happens. Likewise, when the synthesizer recieves a Note Off message, it must tell whatever channel is currently playing that note to <em>release</em> that note. Conceivably, if the synth receives a Note Off command for a note that's not playing on any channel, then nothing should happen.</p>
+<p>This procedure of allocating notes to channels is more or less how all polyphonic synthesizers play notes. Given that many synthesizers are limited on how many voices can sound at once, it's important to have a relatively intelligent protocol for allocating notes to channels, such that all the channels are used to their fullest. While working on my synthesizer, I realized that this was an important design consideration pretty early on, and figured someone had already figured this out. After a good amount of Googling, I wasn't able to find any information on the topic of allocating voices to channels in synthesizers. I figured it couldn't be that hard, so I set out to solve the problem myself.</p>
+<h2>A First Attempt</h2>
+<p>Before getting into my first naive solution to this problem, let's first look at a silly little toy synthesizer class definition so we have something to build on. My synthesizer is controlled by a beefy little embedded AVR chip programmed in C++, so that's what we'll be using here.</p>
+<div class="codehilite"><pre><span></span><span class="cp">#define NUM_CHANNELS 6</span>
+
+<span class="k">class</span> <span class="nc">Synth</span> <span class="p">{</span>
+    <span class="k">private</span><span class="o">:</span>
+        <span class="kt">void</span> <span class="n">noteOn</span><span class="p">(</span><span class="kt">uint8_t</span> <span class="n">note</span><span class="p">,</span> <span class="kt">uint8_t</span> <span class="n">velocity</span><span class="p">,</span> <span class="kt">uint8_t</span> <span class="n">channel</span><span class="p">);</span>
+        <span class="kt">void</span> <span class="nf">noteOff</span><span class="p">(</span><span class="kt">uint8_t</span> <span class="n">channel</span><span class="p">);</span>
+
+        <span class="kt">uint8_t</span> <span class="n">noteArray</span><span class="p">[</span><span class="n">NUM_CHANNELS</span><span class="p">];</span>
+    <span class="k">public</span><span class="o">:</span>
+        <span class="n">Synth</span><span class="p">();</span>
+        <span class="kt">void</span> <span class="nf">midiNoteOn</span><span class="p">(</span><span class="kt">uint8_t</span> <span class="n">note</span><span class="p">,</span> <span class="kt">uint8_t</span> <span class="n">velocity</span><span class="p">);</span>
+        <span class="kt">void</span> <span class="nf">midiNoteOff</span><span class="p">(</span><span class="kt">uint8_t</span> <span class="n">note</span><span class="p">);</span>
+        <span class="kt">void</span> <span class="nf">parseMidiMessage</span><span class="p">(</span><span class="n">MIDIMessage</span> <span class="o">*</span><span class="n">msg</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>This representation is oversimplifying things, but it exposes all the things we're concerned with for our problem. The private method <code>noteOn</code> triggers a note to play at a given volume at a given channel, and <code>noteOff</code> tells a given synthesizer channel to release whatever note it's playing. The public method <code>midiNoteOn</code> takes a note and velocity from a MIDI Note On message and triggers a note to play on some channel. <code>midiNoteOff</code> takes a note value from a MIDI message and sends a note off command to whatever channel that note might have been playing on. Both <code>midiNoteOn</code> and <code>midiNoteOff</code> trigger or release notes by calling the private <code>noteOn</code> and <code>noteOff</code>. Our goal will be to fill in the bodies of these two functions, implementing some way of allocating notes to channels, and eventually releasing those notes.</p>
+<p>It's not really necessary here, but <code>parseMidiMessage</code> takes in a MIDIMessage object which presumably contains a MIDI message and its parameters, and interprets it, by dispatching to various MIDI handling functions. That is, <code>parseMidiMessage</code> would dispatch a MIDI Note On message to <code>midiNoteOn</code>, and so on. This is similar to how I implemented MIDI handling in my own synth.</p>
+<p>The private array <code>noteArray</code> is how I chose to implement the first version of my note/channel allocation. The array has as many elements as there are channels in the synthesizer, and is zero-initialized. Index <code>i</code> then corresponds to channel <code>i</code>. A value of 0 in some index <code>i</code> means that there is <em>no note</em> being played on channel <code>i</code>. More specifically, it means that <em>the most recent command to given to that channel was a note off command</em>, and <em>not</em> a note on command. A nonzero value <code>n</code> in some index <code>i</code> means that channel <code>i</code> is currently playing note <code>n</code>, or that the most recent command given to channel <code>i</code> was a note on command, with note value <code>n</code>. For the first iteration of my allocation scheme, this is all the bookkeeping that was required.</p>
+<p>Now that we have the necessary framework in place, we can jump into my first naive approach.</p>
+<div class="codehilite"><pre><span></span><span class="kt">void</span> <span class="n">Synth</span><span class="o">::</span><span class="n">midiNoteOn</span><span class="p">(</span><span class="kt">uint8_t</span> <span class="n">note</span><span class="p">,</span> <span class="kt">uint8_t</span> <span class="n">velocity</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// If we&#39;re already playing the given note, retrigger it on the same channel</span>
+    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">NUM_CHANNELS</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">noteArray</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="n">note</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">noteOn</span><span class="p">(</span><span class="n">note</span><span class="p">,</span> <span class="n">velocity</span><span class="p">,</span> <span class="n">i</span><span class="p">);</span>
+            <span class="k">return</span><span class="p">;</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+    <span class="c1">// Otherwise, find an empty channel to play it on</span>
+    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">NUM_CHANNELS</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">noteArray</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">noteArray</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">note</span><span class="p">;</span>
+            <span class="n">noteOn</span><span class="p">(</span><span class="n">note</span><span class="p">,</span> <span class="n">velocity</span><span class="p">,</span> <span class="n">i</span><span class="p">);</span>
+            <span class="k">return</span><span class="p">;</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+    <span class="k">return</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="n">Synth</span><span class="o">::</span><span class="n">midiNoteOff</span><span class="p">(</span><span class="kt">uint8_t</span> <span class="n">note</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">NUM_CHANNELS</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">noteArray</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="n">note</span><span class="p">){</span>
+            <span class="n">noteArray</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+            <span class="n">noteOff</span><span class="p">(</span><span class="n">i</span><span class="p">);</span>
+            <span class="k">return</span><span class="p">;</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+    <span class="k">return</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>Pretty simple. The idea here is that when we get a note on command, we iterate through noteArray and trigger a note on the first channel that we find that isn't playing a note. If all channels are playing notes, nothing happens. If we get a note on command for a note that's already playing on some channel, we just retrigger the note on that channel. If we try to turn a note off that isn't being played anywhere, nothing happens. This all seems pretty intuitive and straightforward.</p>
+<p>(The astute reader might notice that using this protocol, <code>midiNoteOff</code> is inneficient in that we have to iterate through the entirety of <code>noteArray</code> giving us O(<code>NUM_CHANNELS</code>). We could use a hash map like <code>std::unordered_map</code>, mapping note values to channels, in order to get O(1) performance, but I don't have the C++ standard library easily available to me on my embedded platform, and I had no intention of implementing hash tables, so whatever.)</p>
+<p>After flashing my microcontroller with this code and plugging in a MIDI keyboard to control my synth, everything sounded <em>mostly</em> right. I was indeed getting six-voice polyphony, in that if I held several notes down at once (up to six), they would all play at once, and if I released them, the synthesizer would release the notes as well. After noodling around on my keyboard for a bit though, I noticed some strange behavior that I hadn't accounted for.</p>
+<p>The vast majority of synthesizers share a common way of determining note volume (amplitude) over time. By specifying an <a href="https://en.wikipedia.org/wiki/Synthesizer#Attack_Decay_Sustain_Release_(ADSR)_envelope">ADSR envelope</a>, one can shape the volume of the note over time. "ADSR" stands for <strong>attack</strong>, <strong>decay</strong>, <strong>sustain</strong>, and <strong>release</strong>. When a note is triggered, it takes a certain amount of time to reach its peak amplitude, before decaying to a constant amplitude at which it's sustained. When the note is released, its amplitude goes towards 0 after a set length of time. An ADSR envelope allows the user to parametrize these values, in order to craft different types of sounds.</p>
+<p><br></br>
+<img src="../assets/images/adsr.png" style="max-width: 20em; margin: auto; display: block" class="postImage"></img>
+<div style="text-align: center"><em>A typical ADSR envelope. "A", "D", and "R" are all variables of time, and "S" represents an amplitude value. (Source: <a href="https://en.wikipedia.org/wiki/Synthesizer#/media/File:ADSR_parameter.svg">Wikipedia</a>)</em></div>
+<br></br></p>
+<p>What's relevant to us here, is that <em>a note continues to sound even after it's been released</em>. Calling <code>noteOff</code> for some channel in our synth does <em>not</em> necessarily mean that the channel instantly stops producing sound (unless, of course, the release time is instantaneous). Consider, then, what this means for our synthesizer.</p>
+<p>Using the scheme discussed above, when I pressed a single note on my keyboard and released it, the note was triggered and subsequently entered the "release" portion of the ADSR when I lifted my finger. However, when I pressed and released one note and then immediately pressed a diferent note, the "release" tail of the first note was cut off -- a behvaior that's expected of monophonic synthesizers, but not polyphonic ones.</p>
+<p>This behavior makes sense, though. When no notes are being played, <code>noteArray</code> is filled with zeros. Pressing the first key will trigger a note on channel 0 of the synthesizer, and <code>noteArray[0]</code> will be occupied with a note value. When we release the note, <code>noteArray[0]</code> is set to 0 once again, and the ADSR enters the release phase. When the second note is pressed down, it's <em>also</em> triggered on channel 0, which overrides the release of the previous note that was pressed. Clearly, in this scenario, the second note should have been triggered on a different channel. But which one?</p>
+<h2>Least Recently Used (LRU) Queues</h2>
+<p>Consider the case where we're playing a few notes and a few others have just been released. If we press a new note (without releasing those notes we're currently playing), what channel should we play it on? Clearly, we want to play it on a channel where a note is being released rather than one where a note is currently playing. Since all the channels that are playing released notes could still be generating sound, we want to pick the channel which has the least chance of interrupting a note whose release is sounding. Ultimately, this is the channel which was released <em>longest ago</em> out of all released channels. In other words, the <strong>least recently used</strong> channel which is sounding a released note. (The idea of keeping track of the "least recently used" object is probably most well known as a <a href="https://en.wikipedia.org/wiki/Cache_replacement_policies#Least_recently_used_(LRU)">cache replacement policy</a>, which evicts members of cache lines based on their time of access.)</p>
+<p>Our note-to-channel allocation scheme, then, should somehow incorporate the concept of least recently used channels when picking what channel to play notes on. Before we go on, though, let's formalize a few things.</p>
+<ul>
+<li>
+<p>We call a channel <strong>busy</strong> if it has been issued a "note on" command, but not yet a "note off" command -- the most recent command issued to the channel was a "note on".</p>
+</li>
+<li>
+<p>We call a channel <strong>free</strong> if it has been issued a "note on" command followed by a "note off" command -- the most recent command issued to the channel was a "note off".</p>
+</li>
+</ul>
+<p>Now, imagine maintaining a list of all the busy channels and all the free channels, each sorted by their time of access, <em>descending</em>. Now, if we want to play a note and the list of free channels is non-empty, what channel should we play it on? We can simply take the first channel in the free list and play it on that channel. But now that the channel is no longer free, we have to remove it form the free list and add it to the busy list. Since this channel is now the <em>most recent</em> busy channel, we place it at the very end of the busy list.</p>
+<p>Pretty simple, right? You may have already noticed, however, that we're using the free and busy lists in a particular way, more amenable to a more particular data structure than a simple list or array. (You may also have seen the title of this section.) We can use <strong>queues</strong> instead of lists, where popping a value off a queue returns the least recently used value in the queue. We can do this in a few ways. We could use a <em>priority queue</em>, where each channel is keyed by its access timestamp, and popping a value pops the value with the smallest timestamp. I don't really want to mess around with timsetamps, though. If we follow a simple protocol for pushing and popping channels on to and off of these queues, we can guarantee that a pop will always return the least recently used busy or free channel.</p>
+<p>Unfortunately, I didn't have access to any sort of data type implementing queues, so I whipped one up myself. Brings me back to my intro CS classes from a billion years ago. Of course, we need a way to push and pop on and off the queue, and a way to check if the queue is empty is probably also useful. For reasons we'll see soon, we also need a way to <em>remove</em> a given element from the queue (if it exists in the queue), moving ahead all elements that were behind. That leads us to a class definition like below.</p>
+<div class="codehilite"><pre><span></span><span class="cp">#define MAX_QUEUE_SIZE NUM_CHANNELS</span>
+<span class="k">class</span> <span class="nc">IntQueue</span> <span class="p">{</span>
+    <span class="k">private</span><span class="o">:</span>
+        <span class="kt">int</span> <span class="n">itemsInQueue</span><span class="p">;</span>
+        <span class="kt">int</span> <span class="n">queueArray</span><span class="p">[</span><span class="n">MAX_QUEUE_SIZE</span><span class="p">];</span>
+    <span class="k">public</span><span class="o">:</span>
+        <span class="n">IntQueue</span><span class="p">();</span>
+        <span class="c1">// Pushes an item into the back of the queue. Returns true if successful</span>
+        <span class="kt">bool</span> <span class="nf">push</span><span class="p">(</span><span class="kt">int</span> <span class="n">val</span><span class="p">);</span>
+        <span class="c1">// Puts the first element of the queue in the given pointer. If there are no elements</span>
+        <span class="c1">// in the queue, returns false</span>
+        <span class="kt">bool</span> <span class="nf">pop</span><span class="p">(</span><span class="kt">int</span> <span class="o">*</span><span class="n">valPtr</span><span class="p">);</span>
+        <span class="c1">// Searches the queue for val, and deletes the first instance found</span>
+        <span class="kt">bool</span> <span class="nf">remove</span><span class="p">(</span><span class="kt">int</span> <span class="n">val</span><span class="p">);</span>
+        <span class="c1">// True if queue is empty</span>
+        <span class="kt">bool</span> <span class="nf">isEmpty</span><span class="p">();</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>We implement the queue with a simple array and a value to keep track how many elements are currently in the queue. <code>pop</code> might seem strange in that it doesn't return the value its popping -- it fills a pointer with the value, and returns <code>true</code> if the pop was successful, since we don't fill the pointer if the queue is empty.</p>
+<div class="codehilite"><pre><span></span><span class="n">IntQueue</span><span class="o">::</span><span class="n">IntQueue</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">itemsInQueue</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">bool</span> <span class="n">IntQueue</span><span class="o">::</span><span class="n">push</span><span class="p">(</span><span class="kt">int</span> <span class="n">val</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">itemsInQueue</span> <span class="o">&lt;</span> <span class="n">MAX_QUEUE_SIZE</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">queueArray</span><span class="p">[</span><span class="n">itemsInQueue</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span><span class="p">;</span>
+        <span class="n">itemsInQueue</span><span class="o">++</span><span class="p">;</span>
+        <span class="k">return</span> <span class="nb">true</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="nb">false</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">bool</span> <span class="n">IntQueue</span><span class="o">::</span><span class="n">pop</span><span class="p">(</span><span class="kt">int</span> <span class="o">*</span><span class="n">valPtr</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">itemsInQueue</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">false</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">val</span> <span class="o">=</span> <span class="n">queueArray</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span>
+    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">MAX_QUEUE_SIZE</span> <span class="o">-</span> <span class="mi">1</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">queueArray</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">queueArray</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">];</span>
+    <span class="p">}</span>
+    <span class="o">*</span><span class="n">valPtr</span> <span class="o">=</span> <span class="n">val</span><span class="p">;</span>
+    <span class="n">itemsInQueue</span><span class="o">--</span><span class="p">;</span>
+    <span class="k">return</span> <span class="nb">true</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">bool</span> <span class="n">intQueue</span><span class="o">::</span><span class="n">remove</span><span class="p">(</span><span class="kt">int</span> <span class="n">val</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">itemsInQueue</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">queueArray</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="n">val</span><span class="p">)</span> <span class="p">{</span>
+            <span class="kt">int</span> <span class="n">index</span> <span class="o">=</span> <span class="n">i</span><span class="p">;</span>
+            <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">j</span> <span class="o">=</span> <span class="n">index</span><span class="p">;</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="n">itmesInQueue</span> <span class="o">-</span> <span class="mi">1</span><span class="p">;</span> <span class="n">j</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+                <span class="n">queueArray</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">queueArray</span><span class="p">[</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">];</span>
+            <span class="p">}</span>
+            <span class="n">itemsInQueue</span><span class="o">--</span><span class="p">;</span>
+            <span class="k">return</span> <span class="nb">true</span><span class="p">;</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="nb">false</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">bool</span> <span class="n">intQueue</span><span class="o">::</span><span class="n">isEmpty</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="n">itemsInQueue</span> <span class="o">==</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>Pretty standard stuff here. The <code>remove</code> method searches for an instance of the given value and then removes it by bubbling all elements behind it in the queue foward. Other than that, this is all pretty boring. With our queue data structure in place though, we can get on to nailing down our final implementation.</p>
+<h2>A Better Solution</h2>
+<p>First, let's update our synthesizer representation a little bit. We discussed maintining lists (or queues) to kepp track of the least recently used busy and free channels, so let's add those in. We <em>still</em> need to keep track of what notes are playing on busy channels, so we keep our <code>noteArray</code> in there.</p>
+<div class="codehilite"><pre><span></span><span class="cp">#define NUM_CHANNELS 6</span>
+
+<span class="k">class</span> <span class="nc">Synth</span> <span class="p">{</span>
+    <span class="k">private</span><span class="o">:</span>
+        <span class="kt">void</span> <span class="n">noteOn</span><span class="p">(</span><span class="kt">uint8_t</span> <span class="n">note</span><span class="p">,</span> <span class="kt">uint8_t</span> <span class="n">velocity</span><span class="p">,</span> <span class="kt">uint8_t</span> <span class="n">channel</span><span class="p">);</span>
+        <span class="kt">void</span> <span class="nf">noteOff</span><span class="p">(</span><span class="kt">uint8_t</span> <span class="n">channel</span><span class="p">);</span>
+
+        <span class="kt">uint8_t</span> <span class="n">noteArray</span><span class="p">[</span><span class="n">NUM_CHANNELS</span><span class="p">];</span>
+        <span class="n">IntQueue</span> <span class="n">lruFreeQueue</span><span class="p">;</span>
+        <span class="n">IntQueue</span> <span class="n">lruBusyQueue</span><span class="p">;</span>
+    <span class="k">public</span><span class="o">:</span>
+        <span class="n">Synth</span><span class="p">();</span>
+        <span class="kt">void</span> <span class="nf">midiNoteOn</span><span class="p">(</span><span class="kt">uint8_t</span> <span class="n">note</span><span class="p">,</span> <span class="kt">uint8_t</span> <span class="n">velocity</span><span class="p">);</span>
+        <span class="kt">void</span> <span class="nf">midiNoteOff</span><span class="p">(</span><span class="kt">uint8_t</span> <span class="n">note</span><span class="p">);</span>
+        <span class="kt">void</span> <span class="nf">parseMidiMessage</span><span class="p">(</span><span class="n">MIDIMessage</span> <span class="o">*</span><span class="n">msg</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>Nice. We didn't really have to do anything in our previous <code>Synth</code> constructor (except maybe zero our <code>noteArray</code>), but we have to think a little bit for this new one. What do we want to initialize our queues to? Well, when we turn the synth on, every channel is free, so, just throw every channel in the free queue.</p>
+<div class="codehilite"><pre><span></span><span class="n">Synth</span><span class="o">::</span><span class="n">Synth</span><span class="p">()</span> <span class="o">:</span> <span class="n">lruFreeQueue</span><span class="p">(),</span> <span class="n">lruBusyQueue</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">NUM_CHANNELS</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">noteArray</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+        <span class="n">lruFreeQueue</span><span class="p">.</span><span class="n">push</span><span class="p">(</span><span class="n">i</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>Simple. Now all we have to do is fill in the function bodies for <code>midiNoteOn</code> and <code>midiNoteOff</code>. We'll devise a simple protocol for moving channels between the busy and free queues such that at any given time, we <em>always have the guaruntee</em> that between both queues, each channel appears exactly once.</p>
+<p>Now, here's an overview of how we handle note on requests.</p>
+<ol>
+<li>
+<p>If some channel (necessarily a <em>busy</em> channel) is already playing the requested note, retrigger the note on that channel, and move that channel to the back of the busy queue.</p>
+</li>
+<li>
+<p>Else, if there are any free channels, trigger the note on the least recently used free channel, and move that channel to the back of the busy queue.</p>
+</li>
+<li>
+<p>Otherwise, there are no free channels, so trigger the note on the least recently used <em>busy</em> channel, and move that channel to the back of the busy queue.</p>
+</li>
+<li>
+<p>Whenever a note is turned on on a particular channel, set that channel's value in <code>noteArray</code> to whatever note was just triggered, so we know what channel to send a note off command to later.</p>
+</li>
+</ol>
+<p>Relatively straightforward. Let's jump straight into the codified version of this.</p>
+<div class="codehilite"><pre><span></span><span class="kt">void</span> <span class="n">Synth</span><span class="o">::</span><span class="n">midiNoteOn</span><span class="p">(</span><span class="kt">uint8_t</span> <span class="n">note</span><span class="p">,</span> <span class="kt">uint8_t</span> <span class="n">velocity</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kt">int</span> <span class="n">channel</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="c1">// First check if any channel is currently playing the note</span>
+    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">NUM_CHANNELS</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">noteArray</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="n">note</span><span class="p">)</span> <span class="p">{</span>
+            <span class="c1">// Case 1</span>
+            <span class="n">channel</span> <span class="o">=</span> <span class="n">i</span><span class="p">;</span>
+            <span class="n">lruBusyQueue</span><span class="p">.</span><span class="n">remove</span><span class="p">(</span><span class="n">channel</span><span class="p">);</span>
+            <span class="n">lruBusyQueue</span><span class="p">.</span><span class="n">push</span><span class="p">(</span><span class="n">channel</span><span class="p">);</span>
+            <span class="n">noteArray</span><span class="p">[</span><span class="n">channel</span><span class="p">]</span> <span class="o">=</span> <span class="n">note</span><span class="p">;</span>
+            <span class="n">noteOn</span><span class="p">(</span><span class="n">note</span><span class="p">,</span> <span class="n">velocity</span><span class="p">,</span> <span class="n">channel</span><span class="p">);</span>
+            <span class="k">return</span><span class="p">;</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+    <span class="c1">// If the free queue isn&#39;t empty, then we have an available channel. Play the note on the LRU one.</span>
+    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">lruFreeQueue</span><span class="p">.</span><span class="n">isEmpty</span><span class="p">())</span> <span class="p">{</span>
+        <span class="c1">// Case 2</span>
+        <span class="n">lruFreeQueue</span><span class="p">.</span><span class="n">pop</span><span class="p">(</span><span class="o">&amp;</span><span class="n">channel</span><span class="p">);</span>
+        <span class="n">lruBusyQueue</span><span class="p">.</span><span class="n">push</span><span class="p">(</span><span class="n">channel</span><span class="p">);</span>
+        <span class="n">noteArray</span><span class="p">[</span><span class="n">channel</span><span class="p">]</span> <span class="o">=</span> <span class="n">note</span><span class="p">;</span>
+        <span class="n">noteOn</span><span class="p">(</span><span class="n">note</span><span class="p">,</span> <span class="n">velocity</span><span class="p">,</span> <span class="n">channel</span><span class="p">);</span>
+        <span class="k">return</span><span class="p">;</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span> <span class="c1">// Otherwise, there are no free channels, so they&#39;re all in the busy queue.</span>
+        <span class="c1">// Case 3</span>
+        <span class="n">lruBusyQueue</span><span class="p">.</span><span class="n">pop</span><span class="p">(</span><span class="o">&amp;</span><span class="n">channel</span><span class="p">);</span>
+        <span class="n">lruBusyQueue</span><span class="p">.</span><span class="n">push</span><span class="p">(</span><span class="n">channel</span><span class="p">);</span>
+        <span class="n">noteArray</span><span class="p">[</span><span class="n">channel</span><span class="p">]</span> <span class="o">=</span> <span class="n">note</span><span class="p">;</span>
+        <span class="n">noteOn</span><span class="p">(</span><span class="n">note</span><span class="p">,</span> <span class="n">velocity</span><span class="p">,</span> <span class="n">channel</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="k">return</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>Observe that our first case relies on the assumption that the channel that's playing the requested note <em>is</em> in fact in the busy queue. This assumption is guaranteed by our scheme though. If a note is triggered on some channel, the channel will necessarily be added to the busy queue and its value in <code>noteArray</code> will be updated. Our protocol for turning notes off holds up the other end of the bargain, by ensuring that when the note requested to be turned off exists in <code>notesArray</code>, we zero that index and remove the associated channel from the busy queue.</p>
+<p>As a brief aside, you've probably noticed that this protocol doesn't allow the same note to be played simaltaneously on multiple channels. Our synthesizer definitely supports this behavior, but supporting this in software seems unnecessary. For one, this situation would almost never naturally occur, <em>regardless</em> of the device controlling the synthesizer, be it a keyboard played by someone in real time or a software <a href="google.com">DAW</a>. Secondly, allowing this behavior requires us to make some difficult technical decisions. Imagine we sent the synth multiple note on requests for the same note, so the same note was sounding on all the channels. If we send a note off request for that note, what happens? Turning all the channels off doesn't seem useful, nor does picking one randomly. Maybe turning off the channel that least recently turned that note on? This would require some version of having an LRU queue on a <em>note</em> basis, not just a channel basis. Yuck. Anyways, you can see why I only let one copy of a note sound at once.</p>
+<p>Let's look at our updated version of <code>midiNoteOff</code>, which is way simpler than its counterpart.</p>
+<div class="codehilite"><pre><span></span><span class="kt">void</span> <span class="n">Synth</span><span class="o">::</span><span class="n">midiNoteOff</span><span class="p">(</span><span class="kt">uint8_t</span> <span class="n">note</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">NUM_CHANNELS</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">lruBusyQueue</span><span class="p">.</span><span class="n">remove</span><span class="p">(</span><span class="n">i</span><span class="p">);</span>
+        <span class="n">lruFreeQueue</span><span class="p">.</span><span class="n">push</span><span class="p">(</span><span class="n">i</span><span class="p">);</span>
+        <span class="n">noteArray</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+        <span class="n">noteOff</span><span class="p">(</span><span class="n">i</span><span class="p">);</span>
+        <span class="k">return</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>A lot simpler, right? We just iterate through all the channels, and if one is playing the requested note, we shut it off by removing it from the busy queue and marking it as once again free by pushing it to the back of the free queue. Case 1 from <code>midiNoteOn</code> makes sure that if we see some note in <code>noteArray</code>, we can be sure it only occurs once, so <code>midiNoteOff</code> only has to look until it finds a single channel playing the requested note.</p>
+<p>And that's about it. To be completely honest, I haven't had a chance to test this out yet since I'm out of town and don't have access to my synth, but I'm <strong>99%</strong> sure that it will work (hah). It's a pretty simple solution, and this blog post is probably about 5x longer than it needed to be, but hopefully this information can help some lone synth builder out. </p>
+	      </div>
+	    </div>
+	    <div class="col-sm-2 bg"></div>
+	  </div>
+	  
+	</div>
+	
+      </div>
+
+    </div>
+    
+  </body>
+
+</html>
+

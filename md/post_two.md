@@ -211,7 +211,7 @@ And that'll just about do it folks. Plugging everything we have so far together,
 
 	    msg:	db "Oh boy do I sure love assembly!", 0
 
-	times 510-($-$$) db 0
+	times 510-(\$-$$) db 0
 	dw 0xAA55
 
 Some things might not be familiar in there. The first line of the program tells the assembler that we're working in 16-bit real mode. The lines *cli* and *hlt* after we finish printing tell the processor not to accept interrupts and to halt processing. Finally, remember that the code in a bootsector has to be exactly 512 bytes, ending in 0xAA55? The last two lines pad the binary to a length of 510 bytes, and make sure the file ends with the appropriate boot signature.
