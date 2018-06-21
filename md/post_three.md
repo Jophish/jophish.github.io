@@ -170,7 +170,7 @@ This is a pretty simple example. There are DFAs that are far more complicated, I
 
 Finite automaton are all well and good, but there are in fact languages that they *cannot* recognize. Consider the language of strings of the form $0^k1^k$ from earlier. This language is *nonregular*, in that no DFA can recognize it. In order to recognize this language, some DFA would need a potentially unbounded amount of memory in order to remember how many zeroes it's already seen. This opens us up to a more powerful model of computation, which can recognize a superset of the regular languages, called **context-free languages**, but I'll leave that for another post.
 
-Hopefully you got something out of this post, and if you're really interested, feel free to check out my [Github repo](google.com) which has a much more robust version of the functionality here along with some other nifty features. I haven't touched it in a while (and my Go is kind of rusty) but feel free to make a PR.
+Hopefully you got something out of this post, and if you're really interested, feel free to check out my [Github repo](https://github.com/Jophish/gocompute) which has a much more robust version of the functionality here along with some other nifty features. I haven't touched it in a while (and my Go is kind of rusty) but feel free to make a PR.
 
 <div style="text-align: center"> <b>:^)</b> </div>
 <br></br>

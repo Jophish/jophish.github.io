@@ -1,9 +1,9 @@
-Title:       LRU Queues for Allocating MIDI Note On Events to Synthesizer Channels
+Title:       LRU Queues for Allocating MIDI Notes to Synthesizer Channels
 Author:      Joe Bergeron
 Date:        June 20, 2018
 PostNum:     4
 
-# LRU Queues for Allocating MIDI Note On Events to Synthesizer Channels
+# LRU Queues for Allocating MIDI Notes to Synthesizer Channels
 <br></br>
 
 A few weeks ago, I graduated (hooray) from the school I've been attending for the past four years of my life. I start working full time in August, but until then, I have two months of complete, unsupervised freedom. In an effort to not go absolutley insane, I've tried to occupy my time with various projects. The largest of these projects is a pretty involved and "feature-rich" synthesizer based off the oldschool [YM2612](https://en.wikipedia.org/wiki/Yamaha_YM2612) chip -- a 6 channel, 4 operator FM synth IC produced by Yamaha and used in a number of consumer products like the [Sega Mega Drive](https://en.wikipedia.org/wiki/Sega_Genesis).
@@ -262,7 +262,7 @@ Relatively straightforward. Let's jump straight into the codified version of thi
 
 Observe that our first case relies on the assumption that the channel that's playing the requested note *is* in fact in the busy queue. This assumption is guaranteed by our scheme though. If a note is triggered on some channel, the channel will necessarily be added to the busy queue and its value in `noteArray` will be updated. Our protocol for turning notes off holds up the other end of the bargain, by ensuring that when the note requested to be turned off exists in `notesArray`, we zero that index and remove the associated channel from the busy queue.
 
-As a brief aside, you've probably noticed that this protocol doesn't allow the same note to be played simaltaneously on multiple channels. Our synthesizer definitely supports this behavior, but supporting this in software seems unnecessary. For one, this situation would almost never naturally occur, *regardless* of the device controlling the synthesizer, be it a keyboard played by someone in real time or a software [DAW](google.com). Secondly, allowing this behavior requires us to make some difficult technical decisions. Imagine we sent the synth multiple note on requests for the same note, so the same note was sounding on all the channels. If we send a note off request for that note, what happens? Turning all the channels off doesn't seem useful, nor does picking one randomly. Maybe turning off the channel that least recently turned that note on? This would require some version of having an LRU queue on a *note* basis, not just a channel basis. Yuck. Anyways, you can see why I only let one copy of a note sound at once.
+As a brief aside, you've probably noticed that this protocol doesn't allow the same note to be played simaltaneously on multiple channels. Our synthesizer definitely supports this behavior, but supporting this in software seems unnecessary. For one, this situation would almost never naturally occur, *regardless* of the device controlling the synthesizer, be it a keyboard played by someone in real time or a software [DAW](https://en.wikipedia.org/wiki/Digital_audio_workstation). Secondly, allowing this behavior requires us to make some difficult technical decisions. Imagine we sent the synth multiple note on requests for the same note, so the same note was sounding on all the channels. If we send a note off request for that note, what happens? Turning all the channels off doesn't seem useful, nor does picking one randomly. Maybe turning off the channel that least recently turned that note on? This would require some version of having an LRU queue on a *note* basis, not just a channel basis. Yuck. Anyways, you can see why I only let one copy of a note sound at once.
 
 Let's look at our updated version of `midiNoteOff`, which is way simpler than its counterpart.
 
